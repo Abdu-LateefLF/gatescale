@@ -1,0 +1,52 @@
+version: "3.9"
+
+services:
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    networks:
+      - gatescale-network
+
+  api:
+    build: ./backend
+    environment:
+      - DATABASE_URL=postgres://postgres:password@postgres:5432/gatescale
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=supersecret
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - gatescale-network
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: gatescale
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - gatescale-network
+
+  redis:
+    image: redis:7
+    networks:
+      - gatescale-network
+
+networks:
+  gatescale-network:
+
+volumes:
+  postgres_data:
