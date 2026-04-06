@@ -1,9 +1,11 @@
 import express from 'express';
-import authRoutes from './routes/auth.route';
 import dotenv from 'dotenv';
 import errorHandler from './middleware/errorHandler';
 import redisClient from './config/redis';
 import cookieParser from 'cookie-parser';
+
+import authRoutes from './routes/auth.route';
+import userRoutes from './routes/user.route';
 
 if (process.env.NODE_ENV !== 'production') {
     dotenv.config();
@@ -16,6 +18,7 @@ app.use(express.json());
 
 // Routes
 app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
 
 // Error handling
 app.use(errorHandler);

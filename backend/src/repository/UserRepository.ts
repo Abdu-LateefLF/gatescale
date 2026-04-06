@@ -9,14 +9,18 @@ class UserRepository {
     async insert(newUser: CreateUserInput): Promise<User> {
         const [user] = await db.insert(usersTable).values(newUser).returning();
         if (!user) {
-            throw new Error("Failed to create user");
+            throw new Error('Failed to create user');
         }
 
         return user;
     }
 
-    async findById(id: string) {
-        const [user] = await db.select().from(usersTable).where(eq(usersTable.id, id)).limit(1);
+    async findById(id: string): Promise<User | null> {
+        const [user] = await db
+            .select()
+            .from(usersTable)
+            .where(eq(usersTable.id, id))
+            .limit(1);
         if (!user) {
             return null;
         }
@@ -24,8 +28,12 @@ class UserRepository {
         return user;
     }
 
-    async findByEmail(email: string) {
-        const [user]= await db.select().from(usersTable).where(eq(usersTable.email, email)).limit(1);
+    async findByEmail(email: string): Promise<User | null> {
+        const [user] = await db
+            .select()
+            .from(usersTable)
+            .where(eq(usersTable.email, email))
+            .limit(1);
         if (!user) {
             return null;
         }
