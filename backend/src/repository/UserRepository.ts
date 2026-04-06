@@ -1,12 +1,24 @@
 import { eq } from 'drizzle-orm';
 import { usersTable } from '../db/schemas/user';
 import db from '../index';
+import { User } from '../db/types';
+
+type CreateUserInput = Omit<User, 'id' | 'createdAt'>;
 
 class UserRepository {
-    async insert(name: string, email: string, passwordHash: string) {
-        const [user] = await db.insert(usersTable).values({ name, email, passwordHash }).returning();
+    async insert(newUser: CreateUserInput): Promise<User> {
+        const [user] = await db.insert(usersTable).values(newUser).returning();
         if (!user) {
             throw new Error("Failed to create user");
+        }
+
+        return user;
+    }
+
+    async findById(id: string) {
+        const [user] = await db.select().from(usersTable).where(eq(usersTable.id, id)).limit(1);
+        if (!user) {
+            return null;
         }
 
         return user;

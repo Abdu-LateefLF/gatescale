@@ -1,17 +1,34 @@
 import { Request, Response } from 'express';
-import { RegisterInput } from '../schemas/auth.schema';
+import { LoginInput, RefreshTokenInput, RegisterInput } from '../schemas/auth.schema';
 import authService from '../services/auth.service';
 
 class AuthController {
     async login(req: Request, res: Response) {
-        res.send("Login route");
+        const { email, password } = req.body as LoginInput;
+        const result = await authService.login(email, password);
+
+        res.cookie('accessToken', result.accessToken, { httpOnly: true, secure: true, sameSite: 'none' });
+        res.cookie('refreshToken', result.refreshToken, { httpOnly: true, secure: true, sameSite: 'none', path: '/auth/refresh-token' });
+
+        res.json({ message: "Login successful" });
+    }
+
+    async refreshToken(req: Request, res: Response) {
+        const { refreshToken } = req.body as RefreshTokenInput;
+        const result = await authService.refreshToken(refreshToken);
+        res.json(result);
     }
 
     async register(req: Request, res: Response) {
-        const { name, email, password } = req.body as RegisterInput;
-        
-        const result = await authService.register(name, email, password);
+        const input = req.body as RegisterInput;
+        const result = await authService.register(input);
         res.json(result);
+    }
+
+    async logout(req: Request, res: Response) {
+        res.clearCookie('accessToken');
+        res.clearCookie('refreshToken');
+        res.json({ message: "Logout successful" });
     }
 }
 

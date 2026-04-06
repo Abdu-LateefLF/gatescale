@@ -2,6 +2,8 @@ import express from 'express';
 import authRoutes from './routes/auth.route';
 import dotenv from 'dotenv';
 import errorHandler from './middleware/errorHandler';
+import redisClient from './config/redis';
+import cookieParser from 'cookie-parser';
 
 if (process.env.NODE_ENV !== 'production') {
     dotenv.config();
@@ -9,6 +11,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const app = express();
 
+app.use(cookieParser());
 app.use(express.json());
 
 // Routes
@@ -17,12 +20,13 @@ app.use('/auth', authRoutes);
 // Error handling
 app.use(errorHandler);
 
-app.listen(5000, () => {
-    console.log('Server is running on port 5000');
+app.listen(9000, () => {
+    console.log('Server is running on port 9000');
 });
 
 const shutdown = () => {
     console.log('Shutting down server...');
+    redisClient.quit();
     process.exit(0);
 };
 
