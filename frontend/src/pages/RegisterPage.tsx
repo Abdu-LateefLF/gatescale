@@ -1,6 +1,16 @@
-import { Box, Button, Input, InputLabel, Typography, FormHelperText } from '@mui/material';
+import {
+    Box,
+    Button,
+    Input,
+    InputLabel,
+    Typography,
+    FormHelperText,
+} from '@mui/material';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { register } from '../services/authService';
+import { useState } from 'react';
+import useToast from '../hooks/useToast';
 
 interface RegisterFormInputs {
     name: string;
@@ -10,7 +20,14 @@ interface RegisterFormInputs {
 }
 
 function RegisterPage() {
-    const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormInputs>({
+    const [loading, setLoading] = useState(false);
+    const showToast = useToast();
+    const navigation = useNavigate();
+    const {
+        register: formRegister,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<RegisterFormInputs>({
         defaultValues: {
             name: '',
             email: '',
@@ -19,9 +36,19 @@ function RegisterPage() {
         },
     });
 
-    const onSubmit = (data: RegisterFormInputs) => {
+    const onSubmit = async (data: RegisterFormInputs) => {
         console.log('Form data:', data);
-        // TODO: Send registration request to backend
+        setLoading(true);
+
+        try {
+            await register(data.name, data.email, data.password, data.tier);
+            showToast('Registration successful! Please log in.', 'success');
+            navigation('/login');
+        } catch (error) {
+            showToast('Registration failed. Please try again.', 'error');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -41,57 +68,84 @@ function RegisterPage() {
             <Typography>Register</Typography>
 
             <Box sx={{ width: '100%', maxWidth: 400 }}>
-                <InputLabel htmlFor="name" sx={{ textAlign: 'left' }}>Name</InputLabel>
+                <InputLabel htmlFor="name" sx={{ textAlign: 'left' }}>
+                    Name
+                </InputLabel>
                 <Input
                     id="name"
-                    placeholder='Name'
+                    placeholder="Name"
                     fullWidth
-                    {...register('name', {
+                    {...formRegister('name', {
                         required: 'Name is required',
-                        minLength: { value: 2, message: 'Name must be at least 2 characters' },
+                        minLength: {
+                            value: 2,
+                            message: 'Name must be at least 2 characters',
+                        },
                     })}
                     error={!!errors.name}
                 />
-                {errors.name && <FormHelperText error>{errors.name.message}</FormHelperText>}
+                {errors.name && (
+                    <FormHelperText error>{errors.name.message}</FormHelperText>
+                )}
             </Box>
 
             <Box sx={{ width: '100%', maxWidth: 400 }}>
-                <InputLabel htmlFor="email" sx={{ textAlign: 'left' }}>Email</InputLabel>
+                <InputLabel htmlFor="email" sx={{ textAlign: 'left' }}>
+                    Email
+                </InputLabel>
                 <Input
                     id="email"
-                    placeholder='Email'
+                    placeholder="Email"
                     type="email"
                     fullWidth
-                    {...register('email', {
+                    {...formRegister('email', {
                         required: 'Email is required',
-                        pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Invalid email address' },
+                        pattern: {
+                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                            message: 'Invalid email address',
+                        },
                     })}
                     error={!!errors.email}
                 />
-                {errors.email && <FormHelperText error>{errors.email.message}</FormHelperText>}
+                {errors.email && (
+                    <FormHelperText error>
+                        {errors.email.message}
+                    </FormHelperText>
+                )}
             </Box>
 
             <Box sx={{ width: '100%', maxWidth: 400 }}>
-                <InputLabel htmlFor="password" sx={{ textAlign: 'left' }}>Password</InputLabel>
+                <InputLabel htmlFor="password" sx={{ textAlign: 'left' }}>
+                    Password
+                </InputLabel>
                 <Input
                     id="password"
-                    placeholder='Password'
+                    placeholder="Password"
                     type="password"
                     fullWidth
-                    {...register('password', {
+                    {...formRegister('password', {
                         required: 'Password is required',
-                        minLength: { value: 6, message: 'Password must be at least 6 characters' },
+                        minLength: {
+                            value: 6,
+                            message: 'Password must be at least 6 characters',
+                        },
                     })}
                     error={!!errors.password}
                 />
-                {errors.password && <FormHelperText error>{errors.password.message}</FormHelperText>}
+                {errors.password && (
+                    <FormHelperText error>
+                        {errors.password.message}
+                    </FormHelperText>
+                )}
             </Box>
 
             <Box sx={{ width: '100%', maxWidth: 400 }}>
-                <InputLabel htmlFor="tier" sx={{ textAlign: 'left' }}>Subscription Tier</InputLabel>
+                <InputLabel htmlFor="tier" sx={{ textAlign: 'left' }}>
+                    Subscription Tier
+                </InputLabel>
                 <select
                     id="tier"
-                    {...register('tier')}
+                    {...formRegister('tier')}
                     style={{ width: '100%', padding: '8px', fontSize: '16px' }}
                 >
                     <option value="free">Free</option>
@@ -99,7 +153,12 @@ function RegisterPage() {
                 </select>
             </Box>
 
-            <Button variant="contained" type="submit" sx={{ marginTop: 2, width: '100%', maxWidth: 400 }}>
+            <Button
+                variant="contained"
+                type="submit"
+                sx={{ marginTop: 2, width: '100%', maxWidth: 400 }}
+                disabled={loading}
+            >
                 Register
             </Button>
 

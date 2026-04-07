@@ -11,9 +11,10 @@ services:
         ports:
             - '9000:9000'
         environment:
-            - DATABASE_URL=postgres://postgres:password@postgres:6000/gatescale
+            - DATABASE_URL=postgres://postgres:password@postgres:5432/gatescale
             - REDIS_URL=redis://redis:6379
             - JWT_SECRET=supersecret
+            - CLIENT_URL=http://localhost:5173
         depends_on:
             postgres:
                 condition: service_healthy
@@ -30,7 +31,7 @@ services:
         ports:
             - '5173:5173'
         environment:
-            - VITE_API_URL=http://localhost:5000
+            - VITE_API_URL=http://localhost:9000
 
     postgres:
         image: postgres:15

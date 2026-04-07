@@ -4,7 +4,7 @@ import userService from '../services/user.service';
 
 class UserController {
     getUserProfile(req: Request, res: Response) {
-        const userId = req.user?.id;
+        const userId = req.user?.userId;
         if (!userId) {
             throw new AuthenticationError('User not authenticated');
         }

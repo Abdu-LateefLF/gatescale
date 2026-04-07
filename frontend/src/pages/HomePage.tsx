@@ -6,6 +6,7 @@ function HomePage() {
         <Box>
             <Typography variant="h1">Home Page</Typography>
             <Link to="/register">Register</Link>
+            <Link to="/login">Login</Link>
         </Box>
     )
 }

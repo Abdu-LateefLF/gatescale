@@ -3,8 +3,9 @@ import { verifyToken } from '../utils/jwt';
 import { AuthenticationError } from '../utils/error';
 import { UserRole } from '../db/types';
 
-type UserPayload = {
-    id: string;
+export type UserPayload = {
+    userId: string;
+    tier: string;
     role: string;
 };
 
@@ -17,7 +18,9 @@ export function authenticate(role?: UserRole) {
 
         try {
             const decoded = verifyToken(token) as UserPayload;
-            if (!decoded || !decoded.id || !decoded.role) {
+            console.log('Decoded token:', decoded);
+
+            if (!decoded || !decoded.userId || !decoded.role || !decoded.tier) {
                 throw new AuthenticationError('Invalid token payload');
             }
 

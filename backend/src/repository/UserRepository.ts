@@ -1,5 +1,5 @@
 import { eq } from 'drizzle-orm';
-import { usersTable } from '../db/schemas/user';
+import { usersTable } from '../db/schemas/users';
 import db from '../index';
 import { User } from '../db/types';
 

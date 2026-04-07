@@ -1,5 +1,6 @@
 interface UserPayload {
-    id: string;
+    userId: string;
+    tier: string;
     role: string;
 }
 

@@ -1,6 +1,17 @@
-import { Box, Typography, Button, FormHelperText, Input, InputLabel } from "@mui/material";
-import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import {
+    Box,
+    Typography,
+    Button,
+    FormHelperText,
+    Input,
+    InputLabel,
+} from '@mui/material';
+import { useForm } from 'react-hook-form';
+import { Link, useNavigate } from 'react-router-dom';
+import useToast from '../hooks/useToast';
+import { login } from '../services/authService';
+import { useState } from 'react';
+import useAuth from '../hooks/useAuth';
 
 interface LoginFormInputs {
     email: string;
@@ -8,15 +19,36 @@ interface LoginFormInputs {
 }
 
 function LoginPage() {
-    const { register, handleSubmit, formState: { errors } } = useForm<LoginFormInputs>({
+    const [loading, setLoading] = useState(false);
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<LoginFormInputs>({
         defaultValues: {
             email: '',
             password: '',
         },
     });
 
-    const onSubmit = (data: LoginFormInputs) => {
+    const { refetchUser } = useAuth();
+    const showToast = useToast();
+    const navigate = useNavigate();
+
+    const onSubmit = async (data: LoginFormInputs) => {
         console.log('Form data:', data);
+        setLoading(true);
+
+        try {
+            await login(data.email, data.password);
+            await refetchUser();
+            showToast('Login successful!', 'success');
+            navigate('/dashboard');
+        } catch (error) {
+            showToast('Login failed. Please check your credentials.', 'error');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -32,42 +64,65 @@ function LoginPage() {
                 alignItems: 'center',
                 gap: 2,
             }}
-        >   
+        >
             <Typography>Login</Typography>
 
             <Box sx={{ width: '100%', maxWidth: 400 }}>
-                <InputLabel htmlFor="email" sx={{ textAlign: 'left' }}>Email</InputLabel>
+                <InputLabel htmlFor="email" sx={{ textAlign: 'left' }}>
+                    Email
+                </InputLabel>
                 <Input
                     id="email"
-                    placeholder='Email'
+                    placeholder="Email"
                     type="email"
                     fullWidth
                     {...register('email', {
                         required: 'Email is required',
-                        pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Invalid email address' },
+                        pattern: {
+                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                            message: 'Invalid email address',
+                        },
                     })}
                     error={!!errors.email}
                 />
-                {errors.email && <FormHelperText error>{errors.email.message}</FormHelperText>}
+                {errors.email && (
+                    <FormHelperText error>
+                        {errors.email.message}
+                    </FormHelperText>
+                )}
             </Box>
 
             <Box sx={{ width: '100%', maxWidth: 400 }}>
-                <InputLabel htmlFor="password" sx={{ textAlign: 'left' }}>Password</InputLabel>
+                <InputLabel htmlFor="password" sx={{ textAlign: 'left' }}>
+                    Password
+                </InputLabel>
                 <Input
                     id="password"
-                    placeholder='Password'
+                    placeholder="Password"
                     type="password"
                     fullWidth
                     {...register('password', {
                         required: 'Password is required',
-                        minLength: { value: 6, message: 'Password must be at least 6 characters' },
+                        minLength: {
+                            value: 6,
+                            message: 'Password must be at least 6 characters',
+                        },
                     })}
                     error={!!errors.password}
                 />
-                {errors.password && <FormHelperText error>{errors.password.message}</FormHelperText>}
+                {errors.password && (
+                    <FormHelperText error>
+                        {errors.password.message}
+                    </FormHelperText>
+                )}
             </Box>
 
-            <Button variant="contained" type="submit" sx={{ marginTop: 2, width: '100%', maxWidth: 400 }}>
+            <Button
+                variant="contained"
+                type="submit"
+                sx={{ marginTop: 2, width: '100%', maxWidth: 400 }}
+                disabled={loading}
+            >
                 Login
             </Button>
 

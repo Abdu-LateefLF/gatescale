@@ -3,15 +3,22 @@ import dotenv from 'dotenv';
 import errorHandler from './middleware/errorHandler';
 import redisClient from './config/redis';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 import authRoutes from './routes/auth.route';
 import userRoutes from './routes/user.route';
 
+const app = express();
+
 if (process.env.NODE_ENV !== 'production') {
     dotenv.config();
+    app.use(
+        cors({
+            origin: process.env.CLIENT_URL,
+            credentials: true,
+        })
+    );
 }
-
-const app = express();
 
 app.use(cookieParser());
 app.use(express.json());
