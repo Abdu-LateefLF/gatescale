@@ -9,12 +9,12 @@ class UserService {
         }
 
         const profile: UserProfile = {
-            id: user.id || '',
+            id: user.id!,
             name: user.name,
             email: user.email,
             tier: user.tier,
             role: user.role,
-            createdAt: user.createdAt || '',
+            createdAt: user.createdAt!,
         };
 
         return profile;

@@ -1,5 +1,9 @@
 import { Request, Response } from 'express';
-import { LoginInput, RefreshTokenInput, RegisterInput } from '../schemas/auth.schema';
+import {
+    LoginInput,
+    RefreshTokenInput,
+    RegisterInput,
+} from '../schemas/auth.schema';
 import authService from '../services/auth.service';
 
 class AuthController {
@@ -7,16 +11,36 @@ class AuthController {
         const { email, password } = req.body as LoginInput;
         const result = await authService.login(email, password);
 
-        res.cookie('accessToken', result.accessToken, { httpOnly: true, secure: true, sameSite: 'none' });
-        res.cookie('refreshToken', result.refreshToken, { httpOnly: true, secure: true, sameSite: 'none', path: '/auth/refresh-token' });
+        res.cookie('accessToken', result.accessToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+        });
+        res.cookie('refreshToken', result.refreshToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+            path: '/auth/refresh-token',
+        });
 
-        res.json({ message: "Login successful" });
+        res.json({ message: 'Login successful' });
     }
 
     async refreshToken(req: Request, res: Response) {
         const { refreshToken } = req.body as RefreshTokenInput;
-        const result = await authService.refreshToken(refreshToken);
-        res.json(result);
+        const { accessToken } = await authService.refreshToken(refreshToken);
+
+        console.log(
+            'Refreshed access token: ' +
+                accessToken.substring(0, 5).padEnd(12, '*')
+        );
+
+        res.cookie('accessToken', accessToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+        });
+        res.json({ message: 'Token refresh successful' });
     }
 
     async register(req: Request, res: Response) {
@@ -28,7 +52,7 @@ class AuthController {
     async logout(req: Request, res: Response) {
         res.clearCookie('accessToken');
         res.clearCookie('refreshToken');
-        res.json({ message: "Logout successful" });
+        res.json({ message: 'Logout successful' });
     }
 }
 

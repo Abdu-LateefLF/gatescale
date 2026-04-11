@@ -1,7 +1,5 @@
-import { pgEnum, pgTable, text, uuid } from 'drizzle-orm/pg-core';
-
-export const userRole = pgEnum('user_role', ['user', 'admin']);
-export const subscriptionTier = pgEnum('subscription_tier', ['free', 'pro']);
+import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { subscriptionTier, userRole } from './enums';
 
 export const usersTable = pgTable('users', {
     id: uuid().primaryKey().defaultRandom(),
@@ -10,5 +8,5 @@ export const usersTable = pgTable('users', {
     passwordHash: text().notNull(),
     role: userRole().notNull().default('user'),
     tier: subscriptionTier().notNull().default('free'),
-    createdAt: text().notNull().default(new Date().toISOString()),
+    createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
 });

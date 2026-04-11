@@ -4,7 +4,7 @@ const GetUserProfileSchema = z.object({
     id: z.string(),
     email: z.string().email(),
     name: z.string(),
-    createdAt: z.string(),
+    createdAt: z.date(),
     tier: z.enum(['free', 'pro']).optional(),
     role: z.enum(['user', 'admin']).optional(),
 });

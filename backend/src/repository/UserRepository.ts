@@ -2,6 +2,7 @@ import { eq } from 'drizzle-orm';
 import { usersTable } from '../db/schemas/users';
 import db from '../index';
 import { User } from '../db/types';
+import { InternalServerError } from '../utils/error';
 
 type CreateUserInput = Omit<User, 'id' | 'createdAt'>;
 
@@ -9,7 +10,7 @@ class UserRepository {
     async insert(newUser: CreateUserInput): Promise<User> {
         const [user] = await db.insert(usersTable).values(newUser).returning();
         if (!user) {
-            throw new Error('Failed to create user');
+            throw new InternalServerError('Failed to create user');
         }
 
         return user;

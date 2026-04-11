@@ -18,7 +18,6 @@ export function authenticate(role?: UserRole) {
 
         try {
             const decoded = verifyToken(token) as UserPayload;
-            console.log('Decoded token:', decoded);
 
             if (!decoded || !decoded.userId || !decoded.role || !decoded.tier) {
                 throw new AuthenticationError('Invalid token payload');

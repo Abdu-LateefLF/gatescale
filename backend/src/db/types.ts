@@ -1,4 +1,9 @@
-import { userRole, usersTable } from './schemas/users';
+import { subscriptionTier, userRole } from './schemas/enums';
+import { usersTable } from './schemas/users';
+import { apiKeysTable } from './schemas/apiKeys';
 
 export type User = typeof usersTable.$inferInsert;
 export type UserRole = (typeof userRole.enumValues)[number];
+export type SubscriptionTier = (typeof subscriptionTier.enumValues)[number];
+
+export type ApiKey = typeof apiKeysTable.$inferInsert;
