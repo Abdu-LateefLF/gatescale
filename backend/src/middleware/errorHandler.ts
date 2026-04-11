@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import AppError from '../utils/error';
+import { QueryExecutionError, QueryParseError } from '../services/query/error';
 
 function errorHandler(
     err: Error,
@@ -8,7 +9,16 @@ function errorHandler(
     next: NextFunction
 ) {
     if (err instanceof AppError) {
-        return res.status(err.statusCode).json({ error: err.message });
+        const body: { error: string; line?: number } = { error: err.message };
+        if (err instanceof QueryParseError) {
+            body.line = err.lineNumber;
+        } else if (
+            err instanceof QueryExecutionError &&
+            err.lineNumber !== undefined
+        ) {
+            body.line = err.lineNumber;
+        }
+        return res.status(err.statusCode).json(body);
     }
 
     console.error('Unexpected error:', err);

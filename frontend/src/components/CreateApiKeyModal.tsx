@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import type { CreateApiKeyFormInputs } from '../types';
+import { useEffect } from 'react';
 
 interface CreateApiKeyModalProps {
     open: boolean;
@@ -26,6 +27,7 @@ function CreateApiKeyModal({
     const {
         register,
         handleSubmit,
+        reset,
         formState: { errors },
     } = useForm<CreateApiKeyFormInputs>({
         defaultValues: {
@@ -38,6 +40,12 @@ function CreateApiKeyModal({
         onSubmit(data);
         onClose();
     };
+
+    useEffect(() => {
+        if (open) {
+            reset();
+        }
+    }, [open, reset]);
 
     return (
         <Modal open={open} onClose={onClose}>

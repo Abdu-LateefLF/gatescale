@@ -8,7 +8,7 @@ import cors from 'cors';
 import authRoutes from './routes/auth.route';
 import userRoutes from './routes/user.route';
 import apiKeyRoutes from './routes/apiKey.route';
-import financeRoutes from './routes/finance.route';
+import queryRoutes from './routes/query.route';
 
 const app = express();
 
@@ -29,7 +29,7 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/api-keys', apiKeyRoutes);
-app.use('/finance', financeRoutes);
+app.use('/api', queryRoutes);
 
 // Error handling
 app.use(errorHandler);

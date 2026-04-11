@@ -1,0 +1,91 @@
+import type Command from './commands/command';
+import SetCommand from './commands/set';
+import CalculateCommand from './commands/calculate';
+import AnalyzeCommand from './commands/analyze';
+import OutputCommand from './commands/output';
+import { QueryParseError } from './error';
+import { CommandType, LexedLine, QueryParserResult } from './types';
+
+class QueryParser {
+    async parseQuery(lines: LexedLine[]): Promise<QueryParserResult> {
+        const commands: Command[] = [];
+
+        for (const { text, lineNumber } of lines) {
+            try {
+                const command = this.parseLine(text.trim(), lineNumber);
+                commands.push(command);
+            } catch (error) {
+                if (error instanceof QueryParseError) {
+                    throw error;
+                }
+                const msg =
+                    error instanceof Error ? error.message : String(error);
+                throw new QueryParseError(
+                    `Error parsing line ${lineNumber}: ${msg}`,
+                    lineNumber
+                );
+            }
+        }
+
+        this.validateOutputRules(commands);
+
+        return { commands };
+    }
+
+    private validateOutputRules(commands: Command[]): void {
+        const outputIndices = commands
+            .map((c, i) => (c.type === CommandType.OUTPUT ? i : -1))
+            .filter((i) => i >= 0);
+
+        if (outputIndices.length > 1) {
+            const line = commands[outputIndices[1]!]!.lineNumber;
+            throw new QueryParseError(
+                'Only one OUTPUT statement is allowed',
+                line
+            );
+        }
+
+        if (
+            outputIndices.length === 1 &&
+            outputIndices[0] !== commands.length - 1
+        ) {
+            const line = commands[outputIndices[0]!]!.lineNumber;
+            throw new QueryParseError(
+                'OUTPUT must be the final statement',
+                line
+            );
+        }
+    }
+
+    private parseLine(line: string, lineNumber: number): Command {
+        const head = line.match(/^\s*([^\s]+)/)?.[1] ?? '';
+        const keyword = head.toUpperCase();
+
+        let command: Command;
+        switch (keyword) {
+            case 'SET':
+                command = new SetCommand();
+                break;
+            case 'CALCULATE':
+                command = new CalculateCommand();
+                break;
+            case 'ANALYZE':
+                command = new AnalyzeCommand();
+                break;
+            case 'OUTPUT':
+                command = new OutputCommand();
+                break;
+            default:
+                throw new QueryParseError(
+                    `${head || '(empty)'} is not a valid command`,
+                    lineNumber
+                );
+        }
+
+        command.parse(line, lineNumber);
+        return command;
+    }
+}
+
+const queryParser = new QueryParser();
+export default queryParser;
