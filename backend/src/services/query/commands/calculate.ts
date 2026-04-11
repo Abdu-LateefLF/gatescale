@@ -2,10 +2,7 @@ import Command from './command';
 import { CommandType, Expression, VariableType } from '../types';
 import QueryContext from '../queryContext';
 import { QueryParseError } from '../error';
-import { isReservedKeyword } from '../reservedKeywords';
 import { ExpressionParser, evaluateExpression } from '../expression';
-
-const IDENT = /^[a-zA-Z][a-zA-Z0-9_]*$/;
 
 class CalculateCommand extends Command {
     expr?: Expression;
@@ -29,23 +26,15 @@ class CalculateCommand extends Command {
 
         this.variable = m[1];
 
-        if (isReservedKeyword(this.variable)) {
-            throw new QueryParseError(
-                `Variable name ${this.variable} is a reserved word`,
-                lineNumber
-            );
-        }
-
-        if (!IDENT.test(this.variable)) {
-            throw new QueryParseError('Invalid identifier', lineNumber);
-        }
+        this.validateVariableName(this.variable);
 
         const exprSource = m[2].trim();
 
         try {
             this.expr = new ExpressionParser(exprSource).parse();
-        } catch (e) {
-            const msg = e instanceof Error ? e.message : 'Invalid expression';
+        } catch (error) {
+            const msg =
+                error instanceof Error ? error.message : 'Invalid expression';
             throw new QueryParseError(
                 `Invalid syntax in CALCULATE statement (${msg})`,
                 lineNumber

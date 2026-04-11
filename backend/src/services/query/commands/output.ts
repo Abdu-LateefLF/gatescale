@@ -35,15 +35,7 @@ class OutputCommand extends Command {
         }
 
         for (const name of names) {
-            if (!IDENT.test(name)) {
-                throw new QueryParseError('Invalid identifier', lineNumber);
-            }
-            if (isReservedKeyword(name)) {
-                throw new QueryParseError(
-                    `Variable name ${name} is a reserved word`,
-                    lineNumber
-                );
-            }
+            this.validateVariableName(name);
         }
         this.outputNames = names;
     }

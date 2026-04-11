@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import RegisterPage from './pages/RegisterPage';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
@@ -16,7 +16,11 @@ function App() {
 
                 {/* Protected Routes */}
                 <Route element={<ProtectedRoute />}>
-                    <Route path="/dashboard" element={<DashboardPage />} />
+                    <Route
+                        path="/dashboard"
+                        element={<Navigate to="/dashboard/api-keys" replace />}
+                    />
+                    <Route path="/dashboard/:tab" element={<DashboardPage />} />
                 </Route>
             </Routes>
         </Box>

@@ -40,3 +40,13 @@ export interface GenerateReportResult {
     financialHealthScore: number;
     advice: string;
 }
+
+export interface RunQueryResult {
+    results: Record<string, unknown>;
+    executionTimeMs: number;
+}
+
+export interface RunQueryError {
+    error: string;
+    line?: number;
+}

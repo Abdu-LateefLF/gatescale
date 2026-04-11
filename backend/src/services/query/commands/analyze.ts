@@ -31,13 +31,7 @@ class AnalyzeCommand extends Command {
         }
 
         this.targetName = m[1];
-
-        if (isReservedKeyword(this.targetName)) {
-            throw new QueryParseError(
-                `Variable name ${this.targetName} is a reserved word`,
-                lineNumber
-            );
-        }
+        this.validateVariableName(this.targetName);
 
         const names = m[2]
             .split(',')
@@ -52,15 +46,7 @@ class AnalyzeCommand extends Command {
         }
 
         for (const name of names) {
-            if (!IDENT.test(name)) {
-                throw new QueryParseError('Invalid identifier', lineNumber);
-            }
-            if (isReservedKeyword(name)) {
-                throw new QueryParseError(
-                    `Variable name ${name} is a reserved word`,
-                    lineNumber
-                );
-            }
+            this.validateVariableName(name);
         }
         this.sourceNames = names;
     }

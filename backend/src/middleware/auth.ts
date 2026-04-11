@@ -69,3 +69,38 @@ export async function validateApiKey(
 
     next();
 }
+
+export async function validateApiKeyForPlayground(
+    req: Request,
+    res: Response,
+    next: NextFunction
+) {
+    if (!req.user?.userId) {
+        return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const apiKeyId = req.params.apiKeyId;
+    if (!apiKeyId || typeof apiKeyId !== 'string' || !uuidValidate(apiKeyId)) {
+        return res.status(401).json({ message: 'Invalid API key ID' });
+    }
+
+    try {
+        const apiKey = await apiKeysRepository.findByUserAndId(
+            req.user.userId,
+            apiKeyId
+        );
+        if (!apiKey) {
+            return res.status(401).json({ message: 'Invalid API key ID' });
+        }
+
+        if (!apiKey.isActive || apiKey.expiresAt < new Date()) {
+            return res
+                .status(401)
+                .json({ message: 'API key is inactive or has expired' });
+        }
+    } catch (err) {
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+
+    next();
+}
