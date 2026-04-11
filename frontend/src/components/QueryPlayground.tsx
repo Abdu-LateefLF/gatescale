@@ -7,9 +7,9 @@ import {
     MenuItem,
     Select,
     Stack,
-    TextField,
     Typography,
 } from '@mui/material';
+import FinqlQueryEditor from './FinqlQueryEditor';
 import type { ProtectedApiKey, RunQueryResult, RunQueryError } from '../types';
 
 import useToast from '../hooks/useToast';
@@ -113,15 +113,10 @@ function QueryPlayground({
                     </Select>
                 </FormControl>
 
-                <TextField
-                    label="Query"
-                    multiline
-                    minRows={10}
-                    fullWidth
+                <FinqlQueryEditor
                     value={queryText}
-                    onChange={(event) => setQueryText(event.target.value)}
-                    spellCheck={false}
-                    sx={{ fontFamily: 'monospace' }}
+                    onChange={setQueryText}
+                    minHeight={280}
                 />
                 <Box>
                     <Button
