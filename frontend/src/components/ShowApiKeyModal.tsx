@@ -24,23 +24,27 @@ function ShowApiKeyModal({ open, onClose, apiKey }: ShowApiKeyModalProps) {
                 sx={{
                     width: '100%',
                     maxWidth: 500,
-                    p: 2,
+                    p: 3,
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 2,
-                    backgroundColor: 'white',
+                    bgcolor: 'background.paper',
                     borderRadius: 2,
-                    boxShadow: 2,
+                    border: 1,
+                    borderColor: 'divider',
+                    boxShadow: 3,
                     position: 'absolute',
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
                 }}
             >
-                <Typography variant="h6">Here is your API Key:</Typography>
-                <Typography>
-                    Copy it and save it somewhere safe. You will not be able to
-                    see it again.
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    Your new API key
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                    Copy it and store it safely. You will not be able to see the
+                    full secret again.
                 </Typography>
 
                 <Box
@@ -50,9 +54,11 @@ function ShowApiKeyModal({ open, onClose, apiKey }: ShowApiKeyModalProps) {
                         gap: 1,
                         justifyContent: 'space-between',
                         alignItems: 'center',
-                        backgroundColor: 'rgb(249, 249, 249)',
-                        padding: 1,
+                        bgcolor: 'grey.100',
+                        p: 1.5,
                         borderRadius: 1,
+                        border: 1,
+                        borderColor: 'divider',
                     }}
                 >
                     <Typography
@@ -66,7 +72,7 @@ function ShowApiKeyModal({ open, onClose, apiKey }: ShowApiKeyModalProps) {
                     >
                         {apiKey?.key || 'No API Key'}
                     </Typography>
-                    <IconButton onClick={onCopy}>
+                    <IconButton onClick={onCopy} aria-label="Copy API key">
                         <ContentCopy />
                     </IconButton>
                 </Box>
@@ -76,7 +82,7 @@ function ShowApiKeyModal({ open, onClose, apiKey }: ShowApiKeyModalProps) {
                     color="primary"
                     size="small"
                     onClick={onClose}
-                    sx={{ alignSelf: 'flex-end' }}
+                    sx={{ alignSelf: 'flex-end', textTransform: 'none' }}
                 >
                     Close
                 </Button>

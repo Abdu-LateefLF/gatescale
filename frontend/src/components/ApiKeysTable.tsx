@@ -1,9 +1,11 @@
 import {
     Box,
     Button,
+    Chip,
     IconButton,
     Menu,
     MenuItem,
+    Paper,
     Table,
     TableBody,
     TableCell,
@@ -20,7 +22,7 @@ import ConfirmModal from './ConfirmModal';
 interface ApiKeysTableProps {
     apiKeys: ProtectedApiKey[];
     onClickCreateNewKey: () => void;
-    onRevokeApiKey: (id: string) => void;
+    onRevokeApiKey: (apiKeyId: string) => void;
 }
 
 function ApiKeysTable({
@@ -49,7 +51,9 @@ function ApiKeysTable({
     };
 
     const handleConfirmRevokeApiKey = () => {
-        onRevokeApiKey(selectedApiKey?.id || '');
+        if (selectedApiKey) {
+            onRevokeApiKey(selectedApiKey.id);
+        }
         setOpenConfirmModal(false);
         handleCloseMenu();
     };
@@ -57,11 +61,10 @@ function ApiKeysTable({
     const formatDate = (date: string) => {
         const options: Intl.DateTimeFormatOptions = {
             year: 'numeric',
-            month: 'long',
+            month: 'short',
             day: 'numeric',
             hour: 'numeric',
-            minute: 'numeric',
-            timeZoneName: 'short',
+            minute: '2-digit',
         };
         return new Date(date).toLocaleString('en-US', options);
     };
@@ -70,49 +73,98 @@ function ApiKeysTable({
         <Box sx={{ width: '100%' }}>
             <Box
                 sx={{
-                    width: '100%',
                     display: 'flex',
+                    flexDirection: { xs: 'column', sm: 'row' },
                     justifyContent: 'space-between',
-                    alignItems: 'center',
+                    alignItems: { xs: 'stretch', sm: 'flex-start' },
+                    gap: 2,
+                    mb: 2,
                 }}
             >
-                <Typography>Your API Keys:</Typography>
+                <Box>
+                    <Typography
+                        variant="h6"
+                        sx={{ fontWeight: 600, fontSize: 18 }}
+                    >
+                        API keys
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                        Keys authenticate API requests. The secret is shown only
+                        once when you create a key.
+                    </Typography>
+                </Box>
                 <Button
                     variant="contained"
+                    size="small"
                     color="primary"
                     onClick={onClickCreateNewKey}
+                    sx={{ textTransform: 'none', alignSelf: { sm: 'center' } }}
                 >
-                    Create New Key
+                    Create new key
                 </Button>
             </Box>
+
             <TableContainer
-                sx={{ marginTop: 2, width: '100%', overflowX: 'auto' }}
+                component={Paper}
+                variant="outlined"
+                sx={{
+                    borderRadius: 1,
+                    overflow: 'hidden',
+                }}
             >
-                <Table>
+                <Table size="small">
                     <TableHead>
-                        <TableRow>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Secret</TableCell>
-                            <TableCell>Created At</TableCell>
-                            <TableCell>Expires At</TableCell>
-                            <TableCell></TableCell>
+                        <TableRow sx={{ bgcolor: 'grey.50' }}>
+                            <TableCell sx={{ fontWeight: 600 }}>Name</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>
+                                Secret
+                            </TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>
+                                Created
+                            </TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>
+                                Expires
+                            </TableCell>
+                            <TableCell width={56} align="right" />
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {apiKeys.map((apiKey) => (
-                            <TableRow key={apiKey.id}>
+                            <TableRow key={apiKey.id} hover>
                                 <TableCell>{apiKey.name}</TableCell>
-                                <TableCell>{'*'.repeat(12)}</TableCell>
                                 <TableCell>
+                                    <Chip
+                                        size="small"
+                                        label="Hidden"
+                                        variant="outlined"
+                                        sx={{
+                                            fontFamily: 'monospace',
+                                            fontSize: 11,
+                                        }}
+                                    />
+                                </TableCell>
+                                <TableCell
+                                    sx={{
+                                        color: 'text.secondary',
+                                        fontSize: 13,
+                                    }}
+                                >
                                     {formatDate(apiKey.createdAt)}
                                 </TableCell>
-                                <TableCell>
+                                <TableCell
+                                    sx={{
+                                        color: 'text.secondary',
+                                        fontSize: 13,
+                                    }}
+                                >
                                     {formatDate(apiKey.expiresAt)}
                                 </TableCell>
-                                <TableCell>
+                                <TableCell align="right">
                                     <IconButton
                                         id={`api-key-menu-${apiKey.id}`}
                                         onClick={() => handleOpenMenu(apiKey)}
+                                        aria-label="Key actions"
+                                        size="small"
                                     >
                                         <MoreVert fontSize="small" />
                                     </IconButton>
@@ -121,9 +173,14 @@ function ApiKeysTable({
                         ))}
                         {apiKeys.length === 0 && (
                             <TableRow>
-                                <Box sx={{ padding: 2 }}>
-                                    You have no API keys. Create a new one.
-                                </Box>
+                                <TableCell
+                                    colSpan={5}
+                                    align="center"
+                                    sx={{ py: 5, color: 'text.secondary' }}
+                                >
+                                    No API keys yet. Create one to use the API
+                                    and playground.
+                                </TableCell>
                             </TableRow>
                         )}
                     </TableBody>
@@ -132,14 +189,14 @@ function ApiKeysTable({
 
             <Menu open={openMenu} onClose={handleCloseMenu} anchorEl={anchorEl}>
                 <MenuItem onClick={() => setOpenConfirmModal(true)}>
-                    Revoke
+                    Revoke key
                 </MenuItem>
             </Menu>
 
             <ConfirmModal
                 open={openConfirmModal}
-                title="Revoke API Key"
-                description="Are you sure you want to revoke this API key?"
+                title="Revoke API key"
+                description="This key will stop working immediately. This cannot be undone."
                 onClose={() => setOpenConfirmModal(false)}
                 onConfirm={handleConfirmRevokeApiKey}
             />

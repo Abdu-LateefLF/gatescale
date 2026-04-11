@@ -53,14 +53,16 @@ function CreateApiKeyModal({
                 sx={{
                     width: '100%',
                     maxWidth: 400,
-                    p: 2,
+                    p: 3,
                     position: 'absolute',
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
-                    backgroundColor: 'white',
+                    bgcolor: 'background.paper',
                     borderRadius: 2,
-                    boxShadow: 2,
+                    border: 1,
+                    borderColor: 'divider',
+                    boxShadow: 3,
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 2,
@@ -68,7 +70,9 @@ function CreateApiKeyModal({
                 component="form"
                 onSubmit={handleSubmit(handleSubmitForm)}
             >
-                <Typography variant="h6">Create API Key</Typography>
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    Create API key
+                </Typography>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                     <InputLabel htmlFor="name" sx={{ textAlign: 'left' }}>
                         API Key Name
@@ -106,8 +110,13 @@ function CreateApiKeyModal({
                     )}
                 </Box>
 
-                <Button variant="contained" type="submit" disabled={loading}>
-                    {loading ? 'Creating...' : 'Create API Key'}
+                <Button
+                    variant="contained"
+                    type="submit"
+                    disabled={loading}
+                    sx={{ textTransform: 'none' }}
+                >
+                    {loading ? 'Creating…' : 'Create key'}
                 </Button>
             </Box>
         </Modal>

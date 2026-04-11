@@ -78,8 +78,25 @@ function QueryPlayground({
     }, [apiKeys]);
 
     return (
-        <Box sx={{ px: 2, pb: 2, maxWidth: 960 }}>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        <Box
+            sx={{
+                px: { xs: 2, sm: 3 },
+                pt: 3,
+                pb: 3,
+                maxWidth: 960,
+                mx: 'auto',
+                width: '100%',
+            }}
+        >
+            <Typography
+                variant="body2"
+                sx={{
+                    mb: 2,
+                    color: 'text.secondary',
+                    fontSize: '0.875rem',
+                    lineHeight: 1.6,
+                }}
+            >
                 Run FinQL queries against the API. Use an API key from the Api
                 Keys tab in the header.
             </Typography>
@@ -123,6 +140,7 @@ function QueryPlayground({
                         variant="contained"
                         onClick={handleRun}
                         disabled={loadingQuery || !apiKey}
+                        sx={{ textTransform: 'none' }}
                     >
                         {loadingQuery ? 'Running…' : 'Run query'}
                     </Button>
