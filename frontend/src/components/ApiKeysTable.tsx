@@ -1,6 +1,9 @@
 import {
     Box,
     Button,
+    IconButton,
+    Menu,
+    MenuItem,
     Table,
     TableBody,
     TableCell,
@@ -9,14 +12,48 @@ import {
     TableRow,
     Typography,
 } from '@mui/material';
-import type { ApiKey } from '../types';
+import type { ProtectedApiKey } from '../types';
+import { MoreVert } from '@mui/icons-material';
+import { useState } from 'react';
+import ConfirmModal from './ConfirmModal';
 
-interface ApiKeysListProps {
-    apiKeys: ApiKey[];
+interface ApiKeysTableProps {
+    apiKeys: ProtectedApiKey[];
     onClickCreateNewKey: () => void;
+    onRevokeApiKey: (id: string) => void;
 }
 
-function ApiKeysList({ apiKeys, onClickCreateNewKey }: ApiKeysListProps) {
+function ApiKeysTable({
+    apiKeys,
+    onClickCreateNewKey,
+    onRevokeApiKey,
+}: ApiKeysTableProps) {
+    const [openMenu, setOpenMenu] = useState(false);
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const [selectedApiKey, setSelectedApiKey] =
+        useState<ProtectedApiKey | null>(null);
+    const [openConfirmModal, setOpenConfirmModal] = useState(false);
+
+    const handleOpenMenu = (apiKey: ProtectedApiKey) => {
+        setSelectedApiKey(apiKey);
+        setAnchorEl(
+            document.getElementById(`api-key-menu-${apiKey.id}`) as HTMLElement
+        );
+        setOpenMenu(true);
+    };
+
+    const handleCloseMenu = () => {
+        setOpenMenu(false);
+        setAnchorEl(null);
+        setSelectedApiKey(null);
+    };
+
+    const handleConfirmRevokeApiKey = () => {
+        onRevokeApiKey(selectedApiKey?.id || '');
+        setOpenConfirmModal(false);
+        handleCloseMenu();
+    };
+
     const formatDate = (date: string) => {
         const options: Intl.DateTimeFormatOptions = {
             year: 'numeric',
@@ -54,7 +91,6 @@ function ApiKeysList({ apiKeys, onClickCreateNewKey }: ApiKeysListProps) {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>API Key</TableCell>
                             <TableCell>Name</TableCell>
                             <TableCell>Secret</TableCell>
                             <TableCell>Created At</TableCell>
@@ -65,7 +101,6 @@ function ApiKeysList({ apiKeys, onClickCreateNewKey }: ApiKeysListProps) {
                     <TableBody>
                         {apiKeys.map((apiKey) => (
                             <TableRow key={apiKey.id}>
-                                <TableCell>{apiKey.key}</TableCell>
                                 <TableCell>{apiKey.name}</TableCell>
                                 <TableCell>{'*'.repeat(12)}</TableCell>
                                 <TableCell>
@@ -74,13 +109,42 @@ function ApiKeysList({ apiKeys, onClickCreateNewKey }: ApiKeysListProps) {
                                 <TableCell>
                                     {formatDate(apiKey.expiresAt)}
                                 </TableCell>
+                                <TableCell>
+                                    <IconButton
+                                        id={`api-key-menu-${apiKey.id}`}
+                                        onClick={() => handleOpenMenu(apiKey)}
+                                    >
+                                        <MoreVert fontSize="small" />
+                                    </IconButton>
+                                </TableCell>
                             </TableRow>
                         ))}
+                        {apiKeys.length === 0 && (
+                            <TableRow>
+                                <Box sx={{ padding: 2 }}>
+                                    You have no API keys. Create a new one.
+                                </Box>
+                            </TableRow>
+                        )}
                     </TableBody>
                 </Table>
             </TableContainer>
+
+            <Menu open={openMenu} onClose={handleCloseMenu} anchorEl={anchorEl}>
+                <MenuItem onClick={() => setOpenConfirmModal(true)}>
+                    Revoke
+                </MenuItem>
+            </Menu>
+
+            <ConfirmModal
+                open={openConfirmModal}
+                title="Revoke API Key"
+                description="Are you sure you want to revoke this API key?"
+                onClose={() => setOpenConfirmModal(false)}
+                onConfirm={handleConfirmRevokeApiKey}
+            />
         </Box>
     );
 }
 
-export default ApiKeysList;
+export default ApiKeysTable;

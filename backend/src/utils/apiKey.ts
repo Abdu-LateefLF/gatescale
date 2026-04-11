@@ -14,7 +14,7 @@ export async function generateApiKey(): Promise<{
     const keyWithPrefix = `${KEY_PREFIX}_${keyId}.${key}`;
     const keyHash = await bcrypt.hash(keyWithPrefix, 10);
 
-    return { key, keyId, keyHash };
+    return { key: keyWithPrefix, keyId, keyHash };
 }
 
 export async function compareApiKey(

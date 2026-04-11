@@ -33,9 +33,10 @@ class ApiKeysService {
             throw new BadRequestError('Maximum number of API keys reached');
         }
 
-        const { key, keyHash } = await generateApiKey();
+        const { key, keyId, keyHash } = await generateApiKey();
 
         const newKey = await apiKeysRepository.createApiKey({
+            id: keyId,
             name,
             userId,
             keyHash,

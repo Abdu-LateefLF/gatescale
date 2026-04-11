@@ -16,4 +16,27 @@ export interface ApiKey {
     expiresAt: string;
 }
 
+export interface CreateApiKeyFormInputs {
+    name: string;
+    expiresAt: Date;
+}
+
 export type ProtectedApiKey = Omit<ApiKey, 'key'>;
+
+export interface GenerateReportRequest {
+    income: number;
+    expenses: number;
+    currentSavings: number;
+    interestRate: number;
+    years: number;
+}
+
+export interface GenerateReportResult {
+    monthlyIncome: number;
+    monthlyExpenses: number;
+    monthlySavings: number;
+    monthlySurplus: number;
+    projectedSavings: number;
+    financialHealthScore: number;
+    advice: string;
+}

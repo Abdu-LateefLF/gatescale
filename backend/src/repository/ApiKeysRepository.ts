@@ -1,5 +1,5 @@
 import { apiKeysTable } from '../db/schemas/apiKeys';
-import { ApiKey } from '../db/types';
+import { ApiKey, CreateApiKeyParams } from '../db/types';
 import db from '../index';
 import { and, eq } from 'drizzle-orm';
 import { InternalServerError } from '../utils/error';
@@ -50,7 +50,7 @@ class ApiKeysRepository {
         return apiKey;
     }
 
-    async createApiKey(newApiKey: Omit<ApiKey, 'id'>): Promise<ApiKey> {
+    async createApiKey(newApiKey: CreateApiKeyParams): Promise<ApiKey> {
         const [apiKey] = await db
             .insert(apiKeysTable)
             .values(newApiKey)
