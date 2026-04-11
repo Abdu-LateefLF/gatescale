@@ -1,7 +1,7 @@
 import userRepository from '../repository/UserRepository';
 import { BadRequestError } from '../utils/error';
 import { comparePasswords, hashPassword } from '../utils/password';
-import { RegisterInput } from '../schemas/auth.schema';
+import { RegisterRequest } from '../schemas/auth.schema';
 import { generateToken, verifyToken } from '../utils/jwt';
 import { UserPayload } from '../middleware/auth';
 
@@ -52,7 +52,7 @@ class AuthService {
         };
     }
 
-    async register(payload: RegisterInput): Promise<{ message: string }> {
+    async register(payload: RegisterRequest): Promise<{ message: string }> {
         const userExists = await userRepository.findByEmail(payload.email);
         if (userExists) {
             throw new BadRequestError('Email already in use');

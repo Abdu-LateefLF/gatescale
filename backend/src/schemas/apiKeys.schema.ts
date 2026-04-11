@@ -1,11 +1,11 @@
 import { ApiKey } from '../db/types';
 import z from 'zod';
 
-export const CreateApiKeySchema = z.object({
+export const createApiKeyRequestSchema = z.object({
     name: z.string().min(1),
 });
 
-export type CreateApiKeyInput = z.infer<typeof CreateApiKeySchema>;
+export type CreateApiKeyRequest = z.infer<typeof createApiKeyRequestSchema>;
 export interface CreateApiKeyResult {
     id: string;
     name: string;

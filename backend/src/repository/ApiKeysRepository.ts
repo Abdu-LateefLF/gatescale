@@ -14,7 +14,24 @@ class ApiKeysRepository {
         return results;
     }
 
-    async findById(userId: string, apiKeyId: string): Promise<ApiKey | null> {
+    async findById(id: string): Promise<ApiKey | null> {
+        const [apiKey] = await db
+            .select()
+            .from(apiKeysTable)
+            .where(eq(apiKeysTable.id, id))
+            .limit(1);
+
+        if (!apiKey) {
+            return null;
+        }
+
+        return apiKey;
+    }
+
+    async findByUserAndId(
+        userId: string,
+        apiKeyId: string
+    ): Promise<ApiKey | null> {
         const [apiKey] = await db
             .select()
             .from(apiKeysTable)

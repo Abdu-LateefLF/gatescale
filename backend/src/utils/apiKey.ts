@@ -1,30 +1,25 @@
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
-import { InternalServerError } from './error';
+import { BadRequestError, InternalServerError } from './error';
 
-const KEY_PREFIX = 'gatescale_';
+const KEY_PREFIX = 'gatescale';
 
 export async function generateApiKey(): Promise<{
     key: string;
     keyHash: string;
 }> {
     const key = crypto.randomBytes(32).toString('hex');
-    const hash = await bcrypt.hash(key, 10);
+    const uuid = crypto.randomUUID();
 
-    const hashWithPrefix = `${KEY_PREFIX}${hash}`;
+    const keyWithPrefix = `${KEY_PREFIX}_${uuid}.${key}`;
+    const keyHash = await bcrypt.hash(keyWithPrefix, 10);
 
-    return { key, keyHash: hashWithPrefix };
+    return { key, keyHash };
 }
 
 export async function compareApiKey(
     key: string,
     keyHash: string
 ): Promise<boolean> {
-    if (keyHash.startsWith(KEY_PREFIX)) {
-        throw new InternalServerError('API Key has invalid prefix');
-    }
-
-    const hash = keyHash.split('_')[1];
-
-    return await bcrypt.compare(key, hash);
+    return await bcrypt.compare(key, keyHash);
 }

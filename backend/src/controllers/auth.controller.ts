@@ -1,14 +1,14 @@
 import { Request, Response } from 'express';
 import {
-    LoginInput,
-    RefreshTokenInput,
-    RegisterInput,
+    LoginRequest,
+    RefreshTokenRequest,
+    RegisterRequest,
 } from '../schemas/auth.schema';
 import authService from '../services/auth.service';
 
 class AuthController {
     async login(req: Request, res: Response) {
-        const { email, password } = req.body as LoginInput;
+        const { email, password } = req.body as LoginRequest;
         const result = await authService.login(email, password);
 
         res.cookie('accessToken', result.accessToken, {
@@ -27,7 +27,7 @@ class AuthController {
     }
 
     async refreshToken(req: Request, res: Response) {
-        const { refreshToken } = req.body as RefreshTokenInput;
+        const { refreshToken } = req.body as RefreshTokenRequest;
         const { accessToken } = await authService.refreshToken(refreshToken);
 
         console.log(
@@ -44,7 +44,7 @@ class AuthController {
     }
 
     async register(req: Request, res: Response) {
-        const input = req.body as RegisterInput;
+        const input = req.body as RegisterRequest;
         const result = await authService.register(input);
         res.json(result);
     }

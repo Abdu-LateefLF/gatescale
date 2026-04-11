@@ -1,13 +1,8 @@
-import { z } from 'zod';
-
-const GetUserProfileSchema = z.object({
-    id: z.string(),
-    email: z.string().email(),
-    name: z.string(),
-    createdAt: z.date(),
-    tier: z.enum(['free', 'pro']).optional(),
-    role: z.enum(['user', 'admin']).optional(),
-});
-
-export type GetUserProfileResponse = z.infer<typeof GetUserProfileSchema>;
-export type UserProfile = GetUserProfileResponse;
+export interface UserProfile {
+    id: string;
+    email: string;
+    name: string;
+    createdAt: Date;
+    tier?: 'free' | 'pro';
+    role?: 'user' | 'admin';
+}

@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { authenticate } from '../middleware/auth';
 import apiKeysController from '../controllers/apiKeys.controller';
 import validateBody from '../middleware/validateBody';
-import { CreateApiKeySchema } from '../schemas/apiKeys.schema';
+import { createApiKeyRequestSchema } from '../schemas/apiKeys.schema';
 
 const router = Router();
 
@@ -11,7 +11,7 @@ router.get('/', authenticate(), apiKeysController.getAllApiKeys);
 router.post(
     '/',
     authenticate(),
-    validateBody(CreateApiKeySchema),
+    validateBody(createApiKeyRequestSchema),
     apiKeysController.createApiKey
 );
 

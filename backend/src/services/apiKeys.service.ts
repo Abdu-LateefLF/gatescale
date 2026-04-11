@@ -57,7 +57,7 @@ class ApiKeysService {
         userId: string,
         id: string
     ): Promise<{ message: string }> {
-        const apiKey = await apiKeysRepository.findById(userId, id);
+        const apiKey = await apiKeysRepository.findByUserAndId(userId, id);
         if (!apiKey) {
             throw new BadRequestError('API Key not found');
         }
