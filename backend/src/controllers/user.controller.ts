@@ -3,13 +3,13 @@ import { AuthenticationError } from '../utils/error';
 import userService from '../services/user.service';
 
 class UserController {
-    getUserProfile(req: Request, res: Response) {
+    async getUserProfile(req: Request, res: Response) {
         const userId = req.user?.userId;
         if (!userId) {
             throw new AuthenticationError('User not authenticated');
         }
 
-        const user = userService.getUserProfile(userId);
+        const user = await userService.getUserProfile(userId);
         res.json(user);
     }
 }

@@ -1,10 +1,7 @@
 import { Request, Response } from 'express';
-import {
-    LoginRequest,
-    RefreshTokenRequest,
-    RegisterRequest,
-} from '../schemas/auth.schema';
+import { LoginRequest, RegisterRequest } from '../schemas/auth.schema';
 import authService from '../services/auth.service';
+import { BadRequestError } from '../utils/error';
 
 class AuthController {
     async login(req: Request, res: Response) {
@@ -15,6 +12,7 @@ class AuthController {
             httpOnly: true,
             secure: true,
             sameSite: 'none',
+            path: '/',
         });
         res.cookie('refreshToken', result.refreshToken, {
             httpOnly: true,
@@ -27,20 +25,29 @@ class AuthController {
     }
 
     async refreshToken(req: Request, res: Response) {
-        const { refreshToken } = req.body as RefreshTokenRequest;
-        const { accessToken } = await authService.refreshToken(refreshToken);
+        const refreshToken = req.cookies?.refreshToken;
 
-        console.log(
-            'Refreshed access token: ' +
-                accessToken.substring(0, 5).padEnd(12, '*')
-        );
+        if (!refreshToken) {
+            throw new BadRequestError('Refresh token missing');
+        }
 
-        res.cookie('accessToken', accessToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'none',
-        });
-        res.json({ message: 'Token refresh successful' });
+        try {
+            const { accessToken } =
+                await authService.refreshToken(refreshToken);
+
+            res.cookie('accessToken', accessToken, {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'none',
+                path: '/',
+            });
+
+            res.json({ message: 'Token refresh successful' });
+        } catch (error) {
+            res.clearCookie('accessToken');
+            res.clearCookie('refreshToken');
+            throw error;
+        }
     }
 
     async register(req: Request, res: Response) {

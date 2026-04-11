@@ -20,13 +20,11 @@ class AuthService {
             throw new BadRequestError('Invalid email or password');
         }
 
-        const accessTokenPayload: UserPayload = {
-            userId: user.id || '',
-            tier: user.tier || '',
-            role: user.role || '',
-        };
-
-        const accessToken = generateToken(accessTokenPayload, 15 * 60);
+        const accessToken = this.generateAccessToken(
+            user.id!,
+            user.tier!,
+            user.role!
+        );
         const refreshToken = generateToken({ userId: user.id }, 7 * 24 * 3600); // Refresh token valid for 7 days
 
         return { accessToken, refreshToken };
@@ -45,7 +43,11 @@ class AuthService {
             throw new BadRequestError('User not found');
         }
 
-        const accessToken = generateToken({ userId: user.id, tier: user.tier });
+        const accessToken = this.generateAccessToken(
+            user.id!,
+            user.tier!,
+            user.role!
+        );
 
         return {
             accessToken,
@@ -58,12 +60,27 @@ class AuthService {
             throw new BadRequestError('Email already in use');
         }
 
-        const { password } = payload;
+        const { name, email, password, tier } = payload;
 
         const passwordHash = await hashPassword(password);
-        await userRepository.insert({ ...payload, passwordHash: passwordHash });
+        await userRepository.insert({
+            name,
+            email,
+            tier,
+            passwordHash: passwordHash,
+        });
 
         return { message: 'Registration successful' };
+    }
+
+    private generateAccessToken(userId: string, tier: string, role: string) {
+        const accessTokenPayload: UserPayload = {
+            userId,
+            tier,
+            role,
+        };
+
+        return generateToken(accessTokenPayload, 15 * 60);
     }
 }
 

@@ -9,35 +9,64 @@ const apiClient = axios.create({
 });
 
 let refreshingToken = false;
+let failedQueue: {
+    resolve: (value?: any) => void;
+    reject: (reason?: any) => void;
+}[] = [];
+
+const processQueue = (error: any = null) => {
+    failedQueue.forEach((prom) => {
+        if (error) {
+            prom.reject(error);
+        } else {
+            prom.resolve();
+        }
+    });
+    failedQueue = [];
+};
 
 apiClient.interceptors.response.use(
-    async (response) => {
-        if (response.status >= 200 && response.status < 300) {
-            return response;
-        }
+    (response) => response,
+    async (error) => {
+        const originalRequest = error.config;
 
-        if (response.status === 401 && !refreshingToken) {
-            // Try to refresh the token
+        if (
+            error.response?.status === 401 &&
+            !originalRequest._retry &&
+            !originalRequest.url?.includes('/auth/refresh-token') &&
+            window.location.pathname !== '/login'
+        ) {
+            if (refreshingToken) {
+                return new Promise((resolve, reject) => {
+                    failedQueue.push({ resolve, reject });
+                })
+                    .then(() => apiClient(originalRequest))
+                    .catch((err) => Promise.reject(err));
+            }
+
+            originalRequest._retry = true;
             refreshingToken = true;
-            return apiClient.post('/auth/refresh').then((refreshResponse) => {
-                refreshingToken = false;
 
-                if (refreshResponse.status === 200) {
-                    // Retry the original request
-                    const originalRequest = response.config;
-                    return apiClient(originalRequest);
-                } else {
-                    // If refresh fails, reject with the original error
-                    console.error('Token refresh failed:', refreshResponse);
-                    window.location.href = '/login';
-                    return Promise.reject(response);
-                }
+            return new Promise((resolve, reject) => {
+                apiClient
+                    .post('/auth/refresh-token')
+                    .then(() => {
+                        processQueue(null);
+                        resolve(apiClient(originalRequest));
+                    })
+                    .catch((err) => {
+                        processQueue(err);
+                        if (window.location.pathname !== '/login') {
+                            window.location.href = '/login';
+                        }
+                        reject(err);
+                    })
+                    .finally(() => {
+                        refreshingToken = false;
+                    });
             });
         }
 
-        return response;
-    },
-    (error) => {
         if (error.response) {
             console.error(
                 'API Error:',

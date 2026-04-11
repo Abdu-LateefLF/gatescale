@@ -1,20 +1,20 @@
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
-import { BadRequestError, InternalServerError } from './error';
 
 const KEY_PREFIX = 'gatescale';
 
 export async function generateApiKey(): Promise<{
     key: string;
     keyHash: string;
+    keyId: string;
 }> {
     const key = crypto.randomBytes(32).toString('hex');
-    const uuid = crypto.randomUUID();
+    const keyId = crypto.randomUUID();
 
-    const keyWithPrefix = `${KEY_PREFIX}_${uuid}.${key}`;
+    const keyWithPrefix = `${KEY_PREFIX}_${keyId}.${key}`;
     const keyHash = await bcrypt.hash(keyWithPrefix, 10);
 
-    return { key, keyHash };
+    return { key, keyId, keyHash };
 }
 
 export async function compareApiKey(
