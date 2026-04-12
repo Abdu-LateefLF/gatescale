@@ -19,9 +19,6 @@ function PublicNavBar({ highlight }: PublicNavBarProps) {
             sx={{
                 py: 1.5,
                 px: { xs: 2, sm: 3 },
-                borderBottom: 1,
-                borderColor: 'divider',
-                bgcolor: 'background.paper',
             }}
         >
             <Button
@@ -30,7 +27,7 @@ function PublicNavBar({ highlight }: PublicNavBarProps) {
                 color="inherit"
                 sx={{
                     fontWeight: 700,
-                    fontSize: '1rem',
+                    fontSize: 24,
                     textTransform: 'none',
                 }}
             >

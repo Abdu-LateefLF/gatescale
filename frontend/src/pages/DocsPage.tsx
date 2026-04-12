@@ -1,102 +1,23 @@
-import { Box, Button, Chip, Divider, Paper, Stack, Typography } from '@mui/material';
+import { Box, Button, Chip, Divider, Stack, Typography } from '@mui/material';
 import useAuth from '../hooks/useAuth';
 import { Link as RouterLink } from 'react-router-dom';
+import {
+    CodeBlock,
+    SectionTitle,
+    InlineCode,
+    Keyword,
+} from '../components/docs';
+import {
+    FULL_EXAMPLE,
+    FULL_RESPONSE,
+    REQUEST_EXAMPLE,
+    SUCCESS_RESPONSE,
+    ERROR_RESPONSE_SYNTAX,
+    ERROR_RESPONSE_UNDEF,
+    ERROR_RESPONSE_DIV,
+} from '../data/docsExamples';
 
 const MONO = 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace';
-
-const CODE_BLOCK_SX = {
-    p: 2,
-    bgcolor: 'grey.100',
-    borderRadius: 1,
-    fontFamily: MONO,
-    fontSize: '0.8125rem',
-    lineHeight: 1.6,
-    whiteSpace: 'pre-wrap',
-    overflow: 'auto',
-} as const;
-
-function SectionTitle({ children }: { children: React.ReactNode }) {
-    return (
-        <Typography variant="subtitle1" sx={{ mt: 4, mb: 1, fontWeight: 700 }}>
-            {children}
-        </Typography>
-    );
-}
-
-function InlineCode({ children }: { children: React.ReactNode }) {
-    return (
-        <Typography
-            component="span"
-            sx={{
-                fontFamily: MONO,
-                fontSize: '0.8rem',
-                bgcolor: 'grey.100',
-                px: 0.5,
-                borderRadius: 0.5,
-            }}
-        >
-            {children}
-        </Typography>
-    );
-}
-
-function Keyword({ children }: { children: React.ReactNode }) {
-    return (
-        <Typography
-            component="span"
-            sx={{ fontWeight: 700, color: 'primary.dark' }}
-        >
-            {children}
-        </Typography>
-    );
-}
-
-const FULL_EXAMPLE = `SET income = 6000
-SET expenses = 4500
-CALCULATE surplus = income - expenses
-CALCULATE savingsRate = surplus / income
-ANALYZE health USING surplus, income
-OUTPUT surplus, savingsRate, health`;
-
-const FULL_RESPONSE = `{
-  "results": {
-    "surplus": 1500,
-    "savingsRate": 0.25,
-    "health": "Strong"
-  },
-  "executionTimeMs": 14
-}`;
-
-const REQUEST_EXAMPLE = `POST /api/run HTTP/1.1
-Host: your-api-host
-x-api-key: YOUR_API_KEY
-Content-Type: application/json
-
-{
-  "query": "SET income = 6000\\nSET expenses = 4500\\nCALCULATE surplus = income - expenses\\nOUTPUT surplus"
-}`;
-
-const SUCCESS_RESPONSE = `{
-  "results": {
-    "surplus": 1500
-  },
-  "executionTimeMs": 8
-}`;
-
-const ERROR_RESPONSE_SYNTAX = `{
-  "error": "Invalid syntax in CALCULATE statement",
-  "line": 3
-}`;
-
-const ERROR_RESPONSE_UNDEF = `{
-  "error": "Undefined variable: income",
-  "line": 2
-}`;
-
-const ERROR_RESPONSE_DIV = `{
-  "error": "Division by zero",
-  "line": 4
-}`;
 
 function DocsPage() {
     const { user, isLoading } = useAuth();
@@ -122,7 +43,11 @@ function DocsPage() {
                         mb: 3,
                     }}
                 >
-                    <Typography variant="h4" component="h1" sx={{ fontWeight: 700 }}>
+                    <Typography
+                        variant="h4"
+                        component="h1"
+                        sx={{ fontWeight: 700 }}
+                    >
                         FinQL reference
                     </Typography>
 
@@ -185,13 +110,9 @@ function DocsPage() {
 
                 {/* ── Full example ── */}
                 <SectionTitle>Example script</SectionTitle>
-                <Paper variant="outlined" sx={CODE_BLOCK_SX}>
-                    {FULL_EXAMPLE}
-                </Paper>
+                <CodeBlock lang="finql">{FULL_EXAMPLE}</CodeBlock>
                 <SectionTitle>Example response</SectionTitle>
-                <Paper variant="outlined" sx={CODE_BLOCK_SX}>
-                    {FULL_RESPONSE}
-                </Paper>
+                <CodeBlock lang="json">{FULL_RESPONSE}</CodeBlock>
 
                 <Divider sx={{ my: 4 }} />
 
@@ -211,7 +132,12 @@ function DocsPage() {
                 <Stack spacing={3}>
                     {/* SET */}
                     <Box>
-                        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 0.75 }}>
+                        <Stack
+                            direction="row"
+                            spacing={1}
+                            alignItems="center"
+                            sx={{ mb: 0.75 }}
+                        >
                             <Chip
                                 label="SET"
                                 size="small"
@@ -226,7 +152,11 @@ function DocsPage() {
                             />
                             <InlineCode>SET name = literal</InlineCode>
                         </Stack>
-                        <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ lineHeight: 1.7 }}
+                        >
                             Assigns a literal value to a variable. Supported
                             literal types are <strong>numbers</strong> (integer
                             or decimal), <strong>booleans</strong> (
@@ -235,14 +165,19 @@ function DocsPage() {
                             <strong>quoted strings</strong>. The variable is
                             then available to all subsequent statements.
                         </Typography>
-                        <Paper variant="outlined" sx={{ ...CODE_BLOCK_SX, mt: 1 }}>
-                            {`SET income = 6000\nSET rate = 0.05\nSET label = "monthly"`}
-                        </Paper>
+                        <Box sx={{ mt: 1 }}>
+                            <CodeBlock lang="finql">{`SET income = 6000\nSET rate = 0.05\nSET label = "monthly"`}</CodeBlock>
+                        </Box>
                     </Box>
 
                     {/* CALCULATE */}
                     <Box>
-                        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 0.75 }}>
+                        <Stack
+                            direction="row"
+                            spacing={1}
+                            alignItems="center"
+                            sx={{ mb: 0.75 }}
+                        >
                             <Chip
                                 label="CALCULATE"
                                 size="small"
@@ -257,10 +192,13 @@ function DocsPage() {
                             />
                             <InlineCode>CALCULATE name = expression</InlineCode>
                         </Stack>
-                        <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ lineHeight: 1.7 }}
+                        >
                             Evaluates a mathematical expression and stores the
-                            result. Supports{' '}
-                            <InlineCode>+</InlineCode>{' '}
+                            result. Supports <InlineCode>+</InlineCode>{' '}
                             <InlineCode>-</InlineCode>{' '}
                             <InlineCode>*</InlineCode>{' '}
                             <InlineCode>/</InlineCode>{' '}
@@ -268,14 +206,19 @@ function DocsPage() {
                             parentheses for grouping. Every variable referenced
                             must already be defined earlier in the script.
                         </Typography>
-                        <Paper variant="outlined" sx={{ ...CODE_BLOCK_SX, mt: 1 }}>
-                            {`CALCULATE surplus = income - expenses\nCALCULATE savingsRate = surplus / income\nCALCULATE compound = principal * (1 + rate)^years`}
-                        </Paper>
+                        <Box sx={{ mt: 1 }}>
+                            <CodeBlock lang="finql">{`CALCULATE surplus = income - expenses\nCALCULATE savingsRate = surplus / income\nCALCULATE compound = principal * (1 + rate)^years`}</CodeBlock>
+                        </Box>
                     </Box>
 
                     {/* ANALYZE */}
                     <Box>
-                        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 0.75 }}>
+                        <Stack
+                            direction="row"
+                            spacing={1}
+                            alignItems="center"
+                            sx={{ mb: 0.75 }}
+                        >
                             <Chip
                                 label="ANALYZE"
                                 size="small"
@@ -288,13 +231,19 @@ function DocsPage() {
                                     borderColor: 'primary.200',
                                 }}
                             />
-                            <InlineCode>ANALYZE target USING a, b, …</InlineCode>
+                            <InlineCode>
+                                ANALYZE target USING a, b, …
+                            </InlineCode>
                         </Stack>
-                        <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ lineHeight: 1.7 }}
+                        >
                             Runs a rule-based financial analysis over the
                             supplied variables and stores a label in{' '}
-                            <InlineCode>target</InlineCode>. In v1 the result
-                            is derived from the <em>savings rate</em> (
+                            <InlineCode>target</InlineCode>. In v1 the result is
+                            derived from the <em>savings rate</em> (
                             <InlineCode>surplus / income</InlineCode>):
                         </Typography>
                         <Stack
@@ -317,14 +266,21 @@ function DocsPage() {
                                 </Typography>
                             ))}
                         </Stack>
-                        <Paper variant="outlined" sx={{ ...CODE_BLOCK_SX, mt: 1 }}>
-                            {'ANALYZE health USING surplus, income'}
-                        </Paper>
+                        <Box sx={{ mt: 1 }}>
+                            <CodeBlock lang="finql">
+                                {'ANALYZE health USING surplus, income'}
+                            </CodeBlock>
+                        </Box>
                     </Box>
 
                     {/* OUTPUT */}
                     <Box>
-                        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 0.75 }}>
+                        <Stack
+                            direction="row"
+                            spacing={1}
+                            alignItems="center"
+                            sx={{ mb: 0.75 }}
+                        >
                             <Chip
                                 label="OUTPUT"
                                 size="small"
@@ -339,16 +295,22 @@ function DocsPage() {
                             />
                             <InlineCode>OUTPUT a, b, …</InlineCode>
                         </Stack>
-                        <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ lineHeight: 1.7 }}
+                        >
                             Returns the listed variables as the response and
                             ends execution. <Keyword>OUTPUT</Keyword> must
                             appear exactly once and must be the{' '}
                             <strong>last</strong> statement in the script.
                             Variables not listed are not returned.
                         </Typography>
-                        <Paper variant="outlined" sx={{ ...CODE_BLOCK_SX, mt: 1 }}>
-                            {'OUTPUT surplus, savingsRate, health'}
-                        </Paper>
+                        <Box sx={{ mt: 1 }}>
+                            <CodeBlock lang="finql">
+                                {'OUTPUT surplus, savingsRate, health'}
+                            </CodeBlock>
+                        </Box>
                     </Box>
                 </Stack>
 
@@ -394,9 +356,7 @@ function DocsPage() {
                 </Typography>
 
                 <SectionTitle>Endpoint</SectionTitle>
-                <Paper variant="outlined" sx={CODE_BLOCK_SX}>
-                    {'POST /api/run'}
-                </Paper>
+                <CodeBlock lang="http">{'POST /api/run'}</CodeBlock>
 
                 <SectionTitle>Headers</SectionTitle>
                 <Stack spacing={1}>
@@ -404,7 +364,12 @@ function DocsPage() {
                         ['x-api-key', 'Your API key secret (required)'],
                         ['Content-Type', 'application/json'],
                     ].map(([header, desc]) => (
-                        <Stack key={header} direction="row" spacing={1.5} alignItems="baseline">
+                        <Stack
+                            key={header}
+                            direction="row"
+                            spacing={1.5}
+                            alignItems="baseline"
+                        >
                             <InlineCode>{header}</InlineCode>
                             <Typography variant="body2" color="text.secondary">
                                 {desc}
@@ -420,23 +385,30 @@ function DocsPage() {
                     sx={{ mb: 1, lineHeight: 1.7 }}
                 >
                     The <InlineCode>query</InlineCode> field is the full FinQL
-                    script as a single string. Use{' '}
-                    <InlineCode>\n</InlineCode> to separate statements.
+                    script as a single string. Use <InlineCode>\n</InlineCode>{' '}
+                    to separate statements.
                 </Typography>
-                <Paper variant="outlined" sx={CODE_BLOCK_SX}>
-                    {REQUEST_EXAMPLE}
-                </Paper>
+                <CodeBlock lang="http">{REQUEST_EXAMPLE}</CodeBlock>
 
                 <SectionTitle>Success response — 200</SectionTitle>
-                <Paper variant="outlined" sx={CODE_BLOCK_SX}>
-                    {SUCCESS_RESPONSE}
-                </Paper>
+                <CodeBlock lang="json">{SUCCESS_RESPONSE}</CodeBlock>
                 <Stack spacing={1} sx={{ mt: 1.5 }}>
                     {[
-                        ['results', 'Object mapping each OUTPUT variable name to its value.'],
-                        ['executionTimeMs', 'Server-side execution time in milliseconds.'],
+                        [
+                            'results',
+                            'Object mapping each OUTPUT variable name to its value.',
+                        ],
+                        [
+                            'executionTimeMs',
+                            'Server-side execution time in milliseconds.',
+                        ],
                     ].map(([field, desc]) => (
-                        <Stack key={field} direction="row" spacing={1.5} alignItems="baseline">
+                        <Stack
+                            key={field}
+                            direction="row"
+                            spacing={1.5}
+                            alignItems="baseline"
+                        >
                             <InlineCode>{field}</InlineCode>
                             <Typography variant="body2" color="text.secondary">
                                 {desc}
@@ -452,27 +424,34 @@ function DocsPage() {
                     sx={{ mb: 1.5, lineHeight: 1.7 }}
                 >
                     All errors return a JSON body with an{' '}
-                    <InlineCode>error</InlineCode> message and, when
-                    applicable, the <InlineCode>line</InlineCode> number where
-                    the problem occurred.
+                    <InlineCode>error</InlineCode> message and, when applicable,
+                    the <InlineCode>line</InlineCode> number where the problem
+                    occurred.
                 </Typography>
 
                 <Stack spacing={2}>
                     {[
-                        ['400 — Parse error (invalid syntax)', ERROR_RESPONSE_SYNTAX],
-                        ['400 — Execution error (undefined variable)', ERROR_RESPONSE_UNDEF],
-                        ['400 — Execution error (division by zero)', ERROR_RESPONSE_DIV],
+                        [
+                            '400 — Parse error (invalid syntax)',
+                            ERROR_RESPONSE_SYNTAX,
+                        ],
+                        [
+                            '400 — Execution error (undefined variable)',
+                            ERROR_RESPONSE_UNDEF,
+                        ],
+                        [
+                            '400 — Execution error (division by zero)',
+                            ERROR_RESPONSE_DIV,
+                        ],
                     ].map(([label, code]) => (
-                        <Box key={label as string}>
+                        <Box key={label}>
                             <Typography
                                 variant="body2"
                                 sx={{ mb: 0.75, fontWeight: 500 }}
                             >
                                 {label}
                             </Typography>
-                            <Paper variant="outlined" sx={CODE_BLOCK_SX}>
-                                {code}
-                            </Paper>
+                            <CodeBlock lang="json">{code}</CodeBlock>
                         </Box>
                     ))}
                 </Stack>
@@ -482,7 +461,12 @@ function DocsPage() {
                         ['401', 'Missing or invalid API key.'],
                         ['500', 'Unexpected server error.'],
                     ].map(([status, desc]) => (
-                        <Stack key={status} direction="row" spacing={1.5} alignItems="baseline">
+                        <Stack
+                            key={status}
+                            direction="row"
+                            spacing={1.5}
+                            alignItems="baseline"
+                        >
                             <InlineCode>{status}</InlineCode>
                             <Typography variant="body2" color="text.secondary">
                                 {desc}
