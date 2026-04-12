@@ -1,6 +1,7 @@
 class CacheKeys {
     getApiKeyRateLimitKey(apiKeyId: string): string {
-        return `rate-limit:${apiKeyId}:api-key`;
+        const date = new Date().toISOString().split('T')[0];
+        return `rate-limit:${apiKeyId}:api-key:${date}`;
     }
 
     getUserRateLimitKey(userId: string): string {

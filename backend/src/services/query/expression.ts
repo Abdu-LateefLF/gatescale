@@ -70,10 +70,21 @@ export function evaluateExpression(
     const scope: Record<string, unknown> = { ...ALLOWED_FUNCTIONS };
 
     for (const [name, variable] of Object.entries(context.variables)) {
-        if (variable.type === 'number') {
-            scope[name] = variable.value as number;
-        }
+        scope[name] = variable.value as number;
     }
+
+    const tree = math.parse(expr.source);
+    tree.traverse((node) => {
+        if (node.type === 'SymbolNode') {
+            const name = (node as unknown as { name: string }).name;
+            if (!(name in scope)) {
+                throw new QueryExecutionError(
+                    `Undefined variable: ${name}`,
+                    lineNumber
+                );
+            }
+        }
+    });
 
     let result: unknown;
     try {
@@ -83,14 +94,15 @@ export function evaluateExpression(
         throw new QueryExecutionError(msg, lineNumber);
     }
 
-    if (typeof result !== 'number' || !Number.isFinite(result)) {
-        if (typeof result === 'number' && !Number.isFinite(result)) {
-            throw new QueryExecutionError('Division by zero', lineNumber);
-        }
+    if (typeof result !== 'number') {
         throw new QueryExecutionError(
-            `Expression did not produce a number (got ${typeof result})`,
+            `Expression did not produce a number`,
             lineNumber
         );
+    }
+
+    if (!Number.isFinite(result)) {
+        throw new QueryExecutionError('Division by zero', lineNumber);
     }
 
     return result;

@@ -60,7 +60,7 @@ export async function apiKeyRateLimiter(
     }
 
     const maxRequests = userTier === 'free' ? 100 : 1000;
-    const windowSeconds = 3600; // 1 hr
+    const windowSeconds = 24 * 60 * 60; // 24 hours
 
     try {
         const current = await cacheClient.incr(key);
