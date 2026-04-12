@@ -1,16 +1,18 @@
 import {
     Box,
-    Button,
-    Input,
-    InputLabel,
     Typography,
-    FormHelperText,
+    Button,
+    TextField,
+    Paper,
+    Divider,
+    MenuItem,
 } from '@mui/material';
 import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { register } from '../services/authService';
 import { useState } from 'react';
 import useToast from '../hooks/useToast';
+import PublicNavBar from '../components/PublicNavBar';
 
 interface RegisterFormInputs {
     name: string;
@@ -37,14 +39,12 @@ function RegisterPage() {
     });
 
     const onSubmit = async (data: RegisterFormInputs) => {
-        console.log('Form data:', data);
         setLoading(true);
-
         try {
             await register(data.name, data.email, data.password, data.tier);
             showToast('Registration successful! Please log in.', 'success');
             navigation('/login');
-        } catch (error) {
+        } catch {
             showToast('Registration failed. Please try again.', 'error');
         } finally {
             setLoading(false);
@@ -52,123 +52,128 @@ function RegisterPage() {
     };
 
     return (
-        <Box
-            component="form"
-            onSubmit={handleSubmit(onSubmit)}
-            sx={{
-                width: '100%',
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                gap: 2,
-            }}
-        >
-            <Typography>Register</Typography>
+        <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+            <PublicNavBar />
 
-            <Box sx={{ width: '100%', maxWidth: 400 }}>
-                <InputLabel htmlFor="name" sx={{ textAlign: 'left' }}>
-                    Name
-                </InputLabel>
-                <Input
-                    id="name"
-                    placeholder="Name"
-                    fullWidth
-                    {...formRegister('name', {
-                        required: 'Name is required',
-                        minLength: {
-                            value: 2,
-                            message: 'Name must be at least 2 characters',
-                        },
-                    })}
-                    error={!!errors.name}
-                />
-                {errors.name && (
-                    <FormHelperText error>{errors.name.message}</FormHelperText>
-                )}
-            </Box>
-
-            <Box sx={{ width: '100%', maxWidth: 400 }}>
-                <InputLabel htmlFor="email" sx={{ textAlign: 'left' }}>
-                    Email
-                </InputLabel>
-                <Input
-                    id="email"
-                    placeholder="Email"
-                    type="email"
-                    fullWidth
-                    {...formRegister('email', {
-                        required: 'Email is required',
-                        pattern: {
-                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                            message: 'Invalid email address',
-                        },
-                    })}
-                    error={!!errors.email}
-                />
-                {errors.email && (
-                    <FormHelperText error>
-                        {errors.email.message}
-                    </FormHelperText>
-                )}
-            </Box>
-
-            <Box sx={{ width: '100%', maxWidth: 400 }}>
-                <InputLabel htmlFor="password" sx={{ textAlign: 'left' }}>
-                    Password
-                </InputLabel>
-                <Input
-                    id="password"
-                    placeholder="Password"
-                    type="password"
-                    fullWidth
-                    {...formRegister('password', {
-                        required: 'Password is required',
-                        minLength: {
-                            value: 6,
-                            message: 'Password must be at least 6 characters',
-                        },
-                    })}
-                    error={!!errors.password}
-                />
-                {errors.password && (
-                    <FormHelperText error>
-                        {errors.password.message}
-                    </FormHelperText>
-                )}
-            </Box>
-
-            <Box sx={{ width: '100%', maxWidth: 400 }}>
-                <InputLabel htmlFor="tier" sx={{ textAlign: 'left' }}>
-                    Subscription Tier
-                </InputLabel>
-                <select
-                    id="tier"
-                    {...formRegister('tier')}
-                    style={{ width: '100%', padding: '8px', fontSize: '16px' }}
-                >
-                    <option value="free">Free</option>
-                    <option value="pro">Pro</option>
-                </select>
-            </Box>
-
-            <Button
-                variant="contained"
-                type="submit"
-                sx={{ marginTop: 2, width: '100%', maxWidth: 400 }}
-                disabled={loading}
+            <Box
+                sx={{
+                    flex: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    px: 2,
+                    py: 6,
+                }}
             >
-                Register
-            </Button>
+                <Paper
+                    elevation={0}
+                    sx={{
+                        width: '100%',
+                        maxWidth: 420,
+                        p: { xs: 3, sm: 4 },
+                        border: '1px solid',
+                        borderColor: 'divider',
+                        borderRadius: 2,
+                    }}
+                >
+                    <Box sx={{ mb: 3 }}>
+                        <Typography variant="h5" fontWeight={700} gutterBottom>
+                            Create an account
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Get started with FinQL in seconds.
+                        </Typography>
+                    </Box>
 
-            <Link to="/login" style={{ marginTop: 1 }}>
-                Already have an account? Login
-            </Link>
+                    <Box
+                        component="form"
+                        onSubmit={handleSubmit(onSubmit)}
+                        sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+                    >
+                        <TextField
+                            label="Name"
+                            size="small"
+                            fullWidth
+                            {...formRegister('name', {
+                                required: 'Name is required',
+                                minLength: {
+                                    value: 2,
+                                    message: 'Name must be at least 2 characters',
+                                },
+                            })}
+                            error={!!errors.name}
+                            helperText={errors.name?.message}
+                        />
 
-            <Link to="/" style={{ marginTop: 1 }}>
-                Back to Home
-            </Link>
+                        <TextField
+                            label="Email"
+                            type="email"
+                            size="small"
+                            fullWidth
+                            {...formRegister('email', {
+                                required: 'Email is required',
+                                pattern: {
+                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                    message: 'Invalid email address',
+                                },
+                            })}
+                            error={!!errors.email}
+                            helperText={errors.email?.message}
+                        />
+
+                        <TextField
+                            label="Password"
+                            type="password"
+                            size="small"
+                            fullWidth
+                            {...formRegister('password', {
+                                required: 'Password is required',
+                                minLength: {
+                                    value: 6,
+                                    message: 'Password must be at least 6 characters',
+                                },
+                            })}
+                            error={!!errors.password}
+                            helperText={errors.password?.message}
+                        />
+
+                        <TextField
+                            label="Plan"
+                            select
+                            size="small"
+                            fullWidth
+                            defaultValue="free"
+                            SelectProps={{ native: false }}
+                            {...formRegister('tier')}
+                        >
+                            <MenuItem value="free">Free</MenuItem>
+                            <MenuItem value="pro">Pro</MenuItem>
+                        </TextField>
+
+                        <Button
+                            variant="contained"
+                            type="submit"
+                            fullWidth
+                            disabled={loading}
+                            sx={{ mt: 1, textTransform: 'none', fontWeight: 600 }}
+                        >
+                            {loading ? 'Creating account…' : 'Create account'}
+                        </Button>
+                    </Box>
+
+                    <Divider sx={{ my: 3 }} />
+
+                    <Typography variant="body2" color="text.secondary" textAlign="center">
+                        Already have an account?{' '}
+                        <RouterLink
+                            to="/login"
+                            style={{ color: 'inherit', fontWeight: 600 }}
+                        >
+                            Sign in
+                        </RouterLink>
+                    </Typography>
+                </Paper>
+            </Box>
         </Box>
     );
 }

@@ -19,6 +19,9 @@ function PublicNavBar({ highlight }: PublicNavBarProps) {
             sx={{
                 py: 1.5,
                 px: { xs: 2, sm: 3 },
+                maxWidth: 960,
+                mx: 'auto',
+                width: '100%',
             }}
         >
             <Button
