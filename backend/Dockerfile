@@ -20,4 +20,4 @@ RUN npm run build
 EXPOSE 9000
 
 # Wait for postgres and run migrations, then start the app
-CMD ["sh", "-c", "npm run db:push && npm start"]
+CMD ["sh", "-c", "npm run db:push && npm run db:seed && npm start"]

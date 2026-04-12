@@ -50,3 +50,41 @@ export interface RunQueryError {
     error: string;
     line?: number;
 }
+
+export interface ApiKeyUsageStat {
+    apiKeyId: string;
+    apiKeyName: string;
+    totalRequests: number;
+    errorRequests: number;
+}
+
+export interface MetricsSummary {
+    totalRequests: number;
+    requestsToday: number;
+    errorRate: number;
+    usagePerApiKey: ApiKeyUsageStat[];
+}
+
+export type TimeRange = '24h' | '7d' | '30d';
+
+export interface UsageDataPoint {
+    bucket: string;
+    requests: number;
+    errors: number;
+}
+
+export interface UserMetricsStat {
+    userId: string;
+    userName: string;
+    userEmail: string;
+    totalRequests: number;
+    errorRequests: number;
+}
+
+export interface AdminMetricsSummary {
+    totalRequests: number;
+    requestsToday: number;
+    errorRate: number;
+    totalUsers: number;
+    usagePerUser: UserMetricsStat[];
+}

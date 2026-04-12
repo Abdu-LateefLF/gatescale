@@ -71,6 +71,8 @@ export async function validateApiKey(
                 .status(401)
                 .json({ error: 'API key is inactive or has expired' });
         }
+
+        req.apiKeyId = keyId;
     } catch (err) {
         return res.status(500).json({ error: 'Internal server error' });
     }
@@ -106,6 +108,8 @@ export async function validateApiKeyForPlayground(
                 .status(401)
                 .json({ error: 'API key is inactive or has expired' });
         }
+
+        req.apiKeyId = apiKeyId;
     } catch (err) {
         return res.status(500).json({ error: 'Internal server error' });
     }

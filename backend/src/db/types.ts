@@ -1,6 +1,7 @@
 import { subscriptionTier, userRole } from './schemas/enums.js';
 import { usersTable } from './schemas/users.js';
 import { apiKeysTable } from './schemas/apiKeys.js';
+import { apiRequestLogsTable } from './schemas/apiRequestLogs.js';
 
 type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
@@ -12,4 +13,10 @@ export type ApiKey = typeof apiKeysTable.$inferInsert;
 export type CreateApiKeyParams = Omit<
     PartialBy<ApiKey, 'id'>,
     'createdAt' | 'isActive'
+>;
+
+export type ApiRequestLog = typeof apiRequestLogsTable.$inferInsert;
+export type CreateApiRequestLogParams = Omit<
+    PartialBy<ApiRequestLog, 'id'>,
+    'createdAt'
 >;
