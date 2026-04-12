@@ -1,3 +1,3 @@
-export * from './schemas/users';
-export * from './schemas/apiKeys';
-export * from './schemas/enums';
+export * from './schemas/users.js';
+export * from './schemas/apiKeys.js';
+export * from './schemas/enums.js';

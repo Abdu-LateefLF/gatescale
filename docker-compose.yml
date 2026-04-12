@@ -7,6 +7,12 @@ services:
             - '80:80'
         depends_on:
             - api
+            - frontend
+        networks:
+            - gatescale-network
+
+    frontend:
+        build: ./frontend
         networks:
             - gatescale-network
 
@@ -16,6 +22,7 @@ services:
             - DATABASE_URL=postgres://postgres:password@postgres:5432/gatescale
             - REDIS_URL=redis://redis:6379
             - JWT_SECRET=supersecret
+            - NODE_ENV=production
         depends_on:
             postgres:
                 condition: service_healthy

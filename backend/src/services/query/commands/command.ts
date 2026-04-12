@@ -1,7 +1,7 @@
-import { CommandType, Variable } from '../types';
-import QueryContext from '../queryContext';
-import { QueryParseError } from '../error';
-import { isReservedKeyword } from '../reservedKeywords';
+import { CommandType, Variable } from '../types.js';
+import QueryContext from '../queryContext.js';
+import { QueryParseError } from '../error.js';
+import { isReservedKeyword } from '../reservedKeywords.js';
 
 abstract class Command {
     type: CommandType;

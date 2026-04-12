@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import { verifyToken } from '../utils/jwt';
-import { AuthenticationError } from '../utils/error';
-import { UserRole } from '../db/types';
-import apiKeysRepository from '../repository/ApiKeysRepository';
+import { verifyToken } from '../utils/jwt.js';
+import { AuthenticationError } from '../utils/error.js';
+import { UserRole } from '../db/types.js';
+import apiKeysRepository from '../repository/ApiKeysRepository.js';
 import { validate as uuidValidate } from 'uuid';
-import { compareApiKey } from '../utils/apiKey';
+import { compareApiKey } from '../utils/apiKey.js';
 
 export type UserPayload = {
     userId: string;

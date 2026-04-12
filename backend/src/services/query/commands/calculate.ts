@@ -1,8 +1,8 @@
-import Command from './command';
-import { CommandType, Expression, VariableType } from '../types';
-import QueryContext from '../queryContext';
-import { QueryParseError } from '../error';
-import { ExpressionParser, evaluateExpression } from '../expression';
+import Command from './command.js';
+import { CommandType, Expression, VariableType } from '../types.js';
+import QueryContext from '../queryContext.js';
+import { QueryParseError } from '../error.js';
+import { ExpressionParser, evaluateExpression } from '../expression.js';
 
 class CalculateCommand extends Command {
     expr?: Expression;

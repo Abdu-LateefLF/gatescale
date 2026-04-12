@@ -1,6 +1,6 @@
-import QueryContext from './queryContext';
-import { Expression } from './types';
-import { QueryExecutionError } from './error';
+import QueryContext from './queryContext.js';
+import { Expression } from './types.js';
+import { QueryExecutionError } from './error.js';
 
 const IDENT_START = /[a-zA-Z]/;
 const IDENT_PART = /[a-zA-Z0-9_]/;

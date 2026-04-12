@@ -1,14 +1,14 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import errorHandler from './middleware/errorHandler';
-import redisClient from './config/redis';
+import errorHandler from './middleware/errorHandler.js';
+import redisClient from './config/redis.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
-import authRoutes from './routes/auth.route';
-import userRoutes from './routes/user.route';
-import apiKeyRoutes from './routes/apiKey.route';
-import queryRoutes from './routes/query.route';
+import authRoutes from './routes/auth.route.js';
+import userRoutes from './routes/user.route.js';
+import apiKeyRoutes from './routes/apiKey.route.js';
+import queryRoutes from './routes/query.route.js';
 
 const app = express();
 

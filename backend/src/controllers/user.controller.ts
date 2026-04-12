@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { AuthenticationError } from '../utils/error';
-import userService from '../services/user.service';
+import { AuthenticationError } from '../utils/error.js';
+import userService from '../services/user.service.js';
 
 class UserController {
     async getUserProfile(req: Request, res: Response) {

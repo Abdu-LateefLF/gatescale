@@ -1,5 +1,5 @@
-import userRepository from '../repository/UserRepository';
-import { UserProfile } from '../schemas/user.schema';
+import userRepository from '../repository/UserRepository.js';
+import { UserProfile } from '../schemas/user.schema.js';
 
 class UserService {
     async getUserProfile(userId: string): Promise<UserProfile> {

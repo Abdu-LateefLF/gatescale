@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { authenticate } from '../middleware/auth';
-import apiKeysController from '../controllers/apiKeys.controller';
-import validateBody from '../middleware/validateBody';
-import { createApiKeyRequestSchema } from '../schemas/apiKeys.schema';
+import { authenticate } from '../middleware/auth.js';
+import apiKeysController from '../controllers/apiKeys.controller.js';
+import validateBody from '../middleware/validateBody.js';
+import { createApiKeyRequestSchema } from '../schemas/apiKeys.schema.js';
 
 const router = Router();
 

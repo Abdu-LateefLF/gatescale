@@ -1,8 +1,8 @@
-import Command from './command';
-import { CommandType } from '../types';
-import QueryContext from '../queryContext';
-import { QueryParseError } from '../error';
-import { isReservedKeyword } from '../reservedKeywords';
+import Command from './command.js';
+import { CommandType } from '../types.js';
+import QueryContext from '../queryContext.js';
+import { QueryParseError } from '../error.js';
+import { isReservedKeyword } from '../reservedKeywords.js';
 
 const IDENT = /^[a-zA-Z][a-zA-Z0-9_]*$/;
 

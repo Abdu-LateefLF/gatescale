@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import queryController from '../controllers/query.controller';
-import validateBody from '../middleware/validateBody';
-import { runQueryRequestSchema } from '../schemas/query.schema';
+import queryController from '../controllers/query.controller.js';
+import validateBody from '../middleware/validateBody.js';
+import { runQueryRequestSchema } from '../schemas/query.schema.js';
 import {
     authenticate,
     validateApiKey,
     validateApiKeyForPlayground,
-} from '../middleware/auth';
+} from '../middleware/auth.js';
 
 const router = Router();
 

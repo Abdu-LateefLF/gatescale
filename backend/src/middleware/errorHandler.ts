@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import AppError from '../utils/error';
-import { QueryExecutionError, QueryParseError } from '../services/query/error';
+import AppError from '../utils/error.js';
+import { QueryExecutionError, QueryParseError } from '../services/query/error.js';
 
 function errorHandler(
     err: Error,
