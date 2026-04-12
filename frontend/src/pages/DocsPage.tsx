@@ -1,6 +1,7 @@
 import { Box, Button, Chip, Divider, Stack, Typography } from '@mui/material';
 import useAuth from '../hooks/useAuth';
 import { Link as RouterLink } from 'react-router-dom';
+import BrandLogo from '../components/BrandLogo';
 import {
     CodeBlock,
     SectionTitle,
@@ -44,13 +45,16 @@ function DocsPage() {
                         mb: 3,
                     }}
                 >
-                    <Typography
-                        variant="h4"
-                        component="h1"
-                        sx={{ fontWeight: 700 }}
-                    >
-                        FinQL reference
-                    </Typography>
+                    <Stack direction="row" spacing={1.5} alignItems="center">
+                        <BrandLogo />
+                        <Typography
+                            variant="h4"
+                            component="h1"
+                            sx={{ fontWeight: 700, color: 'text.primary' }}
+                        >
+                            reference
+                        </Typography>
+                    </Stack>
 
                     <Stack direction="row" spacing={1} alignItems="center">
                         <Typography

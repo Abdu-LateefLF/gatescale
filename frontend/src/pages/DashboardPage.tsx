@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Box, Button, Chip, Stack, Typography } from '@mui/material';
+import BrandLogo from '../components/BrandLogo';
 import useAuth from '../hooks/useAuth';
 import { useApiKeys } from '../hooks/useApiKeys';
 import { usePlaygroundQuery } from '../hooks/usePlaygroundQuery';
@@ -121,13 +122,9 @@ function DashboardPage() {
                     px: { xs: 2, sm: 3 },
                 }}
             >
-                <Stack direction="row" gap={0.5} alignItems="center">
-                    <Typography
-                        variant="h6"
-                        sx={{ fontWeight: 700, fontSize: 24, mr: 1.5 }}
-                    >
-                        FinQL
-                    </Typography>
+                <Stack direction="row" gap={1} alignItems="center">
+                    <BrandLogo asLink={false} />
+                    <Box sx={{ mr: 1 }} />
 
                     <Button
                         component={RouterLink}

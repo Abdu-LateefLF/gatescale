@@ -1,6 +1,7 @@
 import { Button, Stack, Typography } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
+import BrandLogo from './BrandLogo';
 
 export type PublicNavHighlight = 'home' | 'docs';
 
@@ -24,18 +25,7 @@ function PublicNavBar({ highlight }: PublicNavBarProps) {
                 width: '100%',
             }}
         >
-            <Button
-                component={RouterLink}
-                to="/"
-                color="inherit"
-                sx={{
-                    fontWeight: 700,
-                    fontSize: 24,
-                    textTransform: 'none',
-                }}
-            >
-                FinQL
-            </Button>
+            <BrandLogo />
 
             <Stack direction="row" spacing={1} alignItems="center">
                 {highlight === 'docs' ? (
