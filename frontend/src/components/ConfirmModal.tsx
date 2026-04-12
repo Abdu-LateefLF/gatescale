@@ -1,4 +1,4 @@
-import { Modal, Box, Typography, Button } from '@mui/material';
+import { Modal, Box, Typography, Button, Divider } from '@mui/material';
 
 interface ConfirmModalProps {
     open: boolean;
@@ -21,35 +21,52 @@ function ConfirmModal({
                 sx={{
                     width: '100%',
                     maxWidth: 400,
-                    p: 2,
                     position: 'absolute',
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
-                    backgroundColor: 'white',
+                    bgcolor: 'background.paper',
                     borderRadius: 2,
-                    boxShadow: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 2,
+                    border: 1,
+                    borderColor: 'divider',
+                    boxShadow: 24,
+                    overflow: 'hidden',
                 }}
             >
-                <Typography variant="h6">{title}</Typography>
-                <Typography variant="body1">{description}</Typography>
-                <Box sx={{ display: 'flex', gap: 2 }}>
+                <Box sx={{ px: 3, pt: 3, pb: 2 }}>
+                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+                        {title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                        {description}
+                    </Typography>
+                </Box>
+                <Divider />
+                <Box
+                    sx={{
+                        px: 3,
+                        py: 2,
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        gap: 1,
+                    }}
+                >
+                    <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={onClose}
+                        sx={{ textTransform: 'none' }}
+                    >
+                        Cancel
+                    </Button>
                     <Button
                         variant="contained"
                         color="error"
+                        size="small"
                         onClick={onConfirm}
+                        sx={{ textTransform: 'none' }}
                     >
                         Confirm
-                    </Button>
-                    <Button
-                        variant="outlined"
-                        color="secondary"
-                        onClick={onClose}
-                    >
-                        Cancel
                     </Button>
                 </Box>
             </Box>

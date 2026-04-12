@@ -103,7 +103,9 @@ function QueryPlayground({
 
             <Stack spacing={2}>
                 <FormControl fullWidth size="small">
-                    <InputLabel id="api-key-select-label">API key</InputLabel>
+                    <InputLabel id="api-key-select-label" shrink>
+                        API key
+                    </InputLabel>
                     <Select
                         labelId="api-key-select-label"
                         label="API key"
@@ -120,6 +122,9 @@ function QueryPlayground({
                                 (keyEntry) => keyEntry.id === selectedApiKeyId
                             );
                             return selectedEntry?.name ?? selectedApiKeyId;
+                        }}
+                        sx={{
+                            backgroundColor: 'white',
                         }}
                     >
                         {apiKeys.map((keyEntry: ProtectedApiKey) => (

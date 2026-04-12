@@ -1,10 +1,9 @@
 import {
     Box,
     Button,
-    FormHelperText,
-    Input,
-    InputLabel,
+    Divider,
     Modal,
+    TextField,
     Typography,
 } from '@mui/material';
 import { useForm } from 'react-hook-form';
@@ -53,71 +52,86 @@ function CreateApiKeyModal({
                 sx={{
                     width: '100%',
                     maxWidth: 400,
-                    p: 3,
                     position: 'absolute',
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
                     bgcolor: 'background.paper',
-                    borderRadius: 2,
+                    borderRadius: '5px',
                     border: 1,
                     borderColor: 'divider',
-                    boxShadow: 3,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 2,
+                    boxShadow: 24,
+                    overflow: 'hidden',
                 }}
                 component="form"
                 onSubmit={handleSubmit(handleSubmitForm)}
             >
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    Create API key
-                </Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                    <InputLabel htmlFor="name" sx={{ textAlign: 'left' }}>
-                        API Key Name
-                    </InputLabel>
-                    <Input
-                        id="name"
-                        placeholder="Name"
-                        fullWidth
-                        {...register('name', { required: 'Name is required' })}
-                    />
-                    {errors.name && (
-                        <FormHelperText error>
-                            {errors.name.message}
-                        </FormHelperText>
-                    )}
+                <Box sx={{ px: 3, pt: 3, pb: 2 }}>
+                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
+                        Create API key
+                    </Typography>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 2,
+                        }}
+                    >
+                        <TextField
+                            id="name"
+                            label="Name"
+                            size="small"
+                            fullWidth
+                            autoFocus
+                            error={!!errors.name}
+                            helperText={errors.name?.message}
+                            {...register('name', {
+                                required: 'Name is required',
+                            })}
+                        />
+                        <TextField
+                            id="expiresAt"
+                            label="Expires at"
+                            type="date"
+                            size="small"
+                            fullWidth
+                            slotProps={{ inputLabel: { shrink: true } }}
+                            error={!!errors.expiresAt}
+                            helperText={errors.expiresAt?.message}
+                            {...register('expiresAt', {
+                                required: 'Expires at is required',
+                            })}
+                        />
+                    </Box>
                 </Box>
-
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                    <InputLabel htmlFor="expiresAt" sx={{ textAlign: 'left' }}>
-                        Expires At
-                    </InputLabel>
-                    <Input
-                        id="expiresAt"
-                        type="date"
-                        placeholder="Expires At"
-                        fullWidth
-                        {...register('expiresAt', {
-                            required: 'Expires At is required',
-                        })}
-                    />
-                    {errors.expiresAt && (
-                        <FormHelperText error>
-                            {errors.expiresAt.message}
-                        </FormHelperText>
-                    )}
-                </Box>
-
-                <Button
-                    variant="contained"
-                    type="submit"
-                    disabled={loading}
-                    sx={{ textTransform: 'none' }}
+                <Divider />
+                <Box
+                    sx={{
+                        px: 3,
+                        py: 2,
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        gap: 1,
+                    }}
                 >
-                    {loading ? 'Creating…' : 'Create key'}
-                </Button>
+                    <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={onClose}
+                        sx={{ textTransform: 'none' }}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        variant="contained"
+                        type="submit"
+                        size="small"
+                        disabled={loading}
+                        sx={{ textTransform: 'none' }}
+                    >
+                        {loading ? 'Creating…' : 'Create key'}
+                    </Button>
+                </Box>
             </Box>
         </Modal>
     );

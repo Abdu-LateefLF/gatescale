@@ -1,5 +1,4 @@
-import { Box, Button, IconButton, Typography } from '@mui/material';
-import { Modal } from '@mui/material';
+import { Box, Button, Divider, IconButton, Modal, Tooltip, Typography } from '@mui/material';
 import type { ApiKey } from '../types';
 import { ContentCopy } from '@mui/icons-material';
 import useToast from '../hooks/useToast';
@@ -24,68 +23,82 @@ function ShowApiKeyModal({ open, onClose, apiKey }: ShowApiKeyModalProps) {
                 sx={{
                     width: '100%',
                     maxWidth: 500,
-                    p: 3,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 2,
-                    bgcolor: 'background.paper',
-                    borderRadius: 2,
-                    border: 1,
-                    borderColor: 'divider',
-                    boxShadow: 3,
                     position: 'absolute',
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
+                    bgcolor: 'background.paper',
+                    borderRadius: 2,
+                    border: 1,
+                    borderColor: 'divider',
+                    boxShadow: 24,
+                    overflow: 'hidden',
                 }}
             >
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    Your new API key
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    Copy it and store it safely. You will not be able to see the
-                    full secret again.
-                </Typography>
+                <Box sx={{ px: 3, pt: 3, pb: 2 }}>
+                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
+                        Your new API key
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                        Copy it and store it safely. You will not be able to see
+                        the full secret again.
+                    </Typography>
 
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        gap: 1,
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        bgcolor: 'grey.100',
-                        p: 1.5,
-                        borderRadius: 1,
-                        border: 1,
-                        borderColor: 'divider',
-                    }}
-                >
-                    <Typography
-                        variant="body1"
+                    <Box
                         sx={{
-                            fontFamily: 'monospace',
-                            fontSize: 11,
-                            width: '100%',
-                            lineBreak: 'anywhere',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1,
+                            mt: 2,
+                            bgcolor: 'grey.50',
+                            border: 1,
+                            borderColor: 'divider',
+                            borderRadius: 1,
+                            pl: 1.5,
+                            pr: 0.5,
+                            py: 0.5,
                         }}
                     >
-                        {apiKey?.key || 'No API Key'}
-                    </Typography>
-                    <IconButton onClick={onCopy} aria-label="Copy API key">
-                        <ContentCopy />
-                    </IconButton>
+                        <Typography
+                            sx={{
+                                fontFamily: 'monospace',
+                                fontSize: 12,
+                                flex: 1,
+                                wordBreak: 'break-all',
+                                color: 'text.primary',
+                            }}
+                        >
+                            {apiKey?.key || 'No API Key'}
+                        </Typography>
+                        <Tooltip title="Copy">
+                            <IconButton
+                                size="small"
+                                onClick={onCopy}
+                                aria-label="Copy API key"
+                            >
+                                <ContentCopy fontSize="small" />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
                 </Box>
-
-                <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    onClick={onClose}
-                    sx={{ alignSelf: 'flex-end', textTransform: 'none' }}
+                <Divider />
+                <Box
+                    sx={{
+                        px: 3,
+                        py: 2,
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                    }}
                 >
-                    Close
-                </Button>
+                    <Button
+                        variant="contained"
+                        size="small"
+                        onClick={onClose}
+                        sx={{ textTransform: 'none' }}
+                    >
+                        Done
+                    </Button>
+                </Box>
             </Box>
         </Modal>
     );
