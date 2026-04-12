@@ -3,5 +3,8 @@ export const FINQL_LINE_COMMANDS = new Set([
     'SET',
     'CALCULATE',
     'ANALYZE',
+    'FORECAST',
+    'SCORE',
+    'ASSERT',
     'OUTPUT',
 ]);

@@ -51,7 +51,7 @@ export function finqlLint(view: EditorView): Diagnostic[] {
                 from: lineInfo.contentStart,
                 to: Math.max(lineInfo.firstTokenEnd, lineInfo.contentStart + 1),
                 severity: 'error',
-                message: `"${displayToken}" is not a valid command. Use SET, CALCULATE, ANALYZE, or OUTPUT.`,
+                message: `"${displayToken}" is not a valid command. Use SET, CALCULATE, ANALYZE, FORECAST, SCORE, ASSERT, or OUTPUT.`,
             });
         }
     }

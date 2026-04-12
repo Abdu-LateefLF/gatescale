@@ -24,12 +24,38 @@ function span(text: string, color: string): Token {
 }
 
 // ── FinQL ────────────────────────────────────────────────────────────────────
-const FINQL_KEYWORDS = new Set([
+/** Commands that must appear as the first token on a line. */
+const FINQL_LINE_KEYWORDS = new Set([
     'SET',
     'CALCULATE',
     'ANALYZE',
+    'FORECAST',
+    'SCORE',
+    'ASSERT',
     'USING',
+    'FOR',
+    'YEARS',
     'OUTPUT',
+]);
+
+/** Built-in math functions and constants available anywhere in an expression. */
+const FINQL_BUILTINS = new Set([
+    'sqrt',
+    'abs',
+    'round',
+    'floor',
+    'ceil',
+    'log',
+    'log10',
+    'log2',
+    'exp',
+    'pow',
+    'min',
+    'max',
+    'mod',
+    'sign',
+    'pi',
+    'e',
 ]);
 
 function tokenizeFinql(source: string): Token[] {
@@ -41,9 +67,12 @@ function tokenizeFinql(source: string): Token[] {
             if (part === '') continue;
             if (/^\s+$/.test(part)) {
                 tokens.push(span(part, C.base));
-            } else if (FINQL_KEYWORDS.has(part) && firstWord) {
+            } else if (FINQL_LINE_KEYWORDS.has(part.toUpperCase()) && firstWord) {
                 tokens.push(span(part, C.keyword));
                 firstWord = false;
+            } else if (FINQL_BUILTINS.has(part)) {
+                tokens.push(span(part, C.method));
+                if (firstWord) firstWord = false;
             } else if (/^[=,+\-*/^()]$/.test(part)) {
                 tokens.push(span(part, C.operator));
             } else if (/^-?\d+(\.\d+)?$/.test(part)) {

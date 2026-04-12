@@ -1,15 +1,21 @@
 export const FULL_EXAMPLE = `SET income = 6000
 SET expenses = 4500
+SET rate = 0.05
 CALCULATE surplus = income - expenses
 CALCULATE savingsRate = surplus / income
 ANALYZE health USING surplus, income
-OUTPUT surplus, savingsRate, health`;
+SCORE stability USING surplus, income
+FORECAST growth USING surplus, rate FOR 3 YEARS
+ASSERT surplus > 0
+OUTPUT surplus, savingsRate, health, stability, growth`;
 
 export const FULL_RESPONSE = `{
   "results": {
     "surplus": 1500,
     "savingsRate": 0.25,
-    "health": "Strong"
+    "health": "Strong",
+    "stability": 25,
+    "growth": 1736.44
   },
   "executionTimeMs": 14
 }`;
@@ -42,5 +48,10 @@ export const ERROR_RESPONSE_UNDEF = `{
 
 export const ERROR_RESPONSE_DIV = `{
   "error": "Division by zero",
+  "line": 4
+}`;
+
+export const ERROR_RESPONSE_ASSERT = `{
+  "error": "Assertion failed: surplus > 0",
   "line": 4
 }`;

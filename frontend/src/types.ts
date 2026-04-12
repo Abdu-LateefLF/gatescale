@@ -18,7 +18,7 @@ export interface ApiKey {
 
 export interface CreateApiKeyFormInputs {
     name: string;
-    expiresAt: Date;
+    expiresAt: string;
 }
 
 export type ProtectedApiKey = Omit<ApiKey, 'key'>;

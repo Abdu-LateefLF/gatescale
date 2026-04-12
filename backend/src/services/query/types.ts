@@ -9,15 +9,6 @@ export interface QueryLexerResult {
     lines: LexedLine[];
 }
 
-export type Expression =
-    | { kind: 'number'; value: number }
-    | { kind: 'ident'; name: string }
-    | {
-          kind: 'binary';
-          op: '+' | '-' | '*' | '/';
-          left: Expression;
-          right: Expression;
-      };
 
 export interface QueryParserResult {
     commands: Command[];
@@ -27,6 +18,9 @@ export enum CommandType {
     SET = 'SET',
     CALCULATE = 'CALCULATE',
     ANALYZE = 'ANALYZE',
+    FORECAST = 'FORECAST',
+    SCORE = 'SCORE',
+    ASSERT = 'ASSERT',
     OUTPUT = 'OUTPUT',
 }
 

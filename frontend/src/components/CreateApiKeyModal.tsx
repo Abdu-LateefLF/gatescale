@@ -31,7 +31,9 @@ function CreateApiKeyModal({
     } = useForm<CreateApiKeyFormInputs>({
         defaultValues: {
             name: '',
-            expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year
+            expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+                .toISOString()
+                .split('T')[0],
         },
     });
 
@@ -42,7 +44,12 @@ function CreateApiKeyModal({
 
     useEffect(() => {
         if (open) {
-            reset();
+            reset({
+                name: '',
+                expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+                    .toISOString()
+                    .split('T')[0],
+            });
         }
     }, [open, reset]);
 
@@ -100,7 +107,18 @@ function CreateApiKeyModal({
                             helperText={errors.expiresAt?.message}
                             {...register('expiresAt', {
                                 required: 'Expires at is required',
+                                min: {
+                                    value: new Date()
+                                        .toISOString()
+                                        .split('T')[0],
+                                    message: 'Expires at must be in the future',
+                                },
                             })}
+                            InputProps={{
+                                inputProps: {
+                                    min: new Date().toISOString().split('T')[0],
+                                },
+                            }}
                         />
                     </Box>
                 </Box>

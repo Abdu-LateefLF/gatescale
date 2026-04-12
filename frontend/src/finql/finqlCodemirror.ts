@@ -12,16 +12,21 @@ import { linter, lintGutter } from '@codemirror/lint';
 import { FINQL_LINE_COMMANDS } from './finqlCommands';
 import { finqlLint } from './finqlLint';
 
-/** Sub-keywords inside a line (e.g. `ANALYZE … USING …`). */
-const FINQL_INLINE_KEYWORDS = /\bUSING\b/gi;
+/** Sub-keywords inside a line (e.g. `ANALYZE … USING …`, `FORECAST … FOR … YEARS`). */
+const FINQL_INLINE_KEYWORDS = /\b(USING|FOR|YEARS)\b/gi;
+
+/** Built-in math functions and constants available in expressions. */
+const FINQL_BUILTINS =
+    /\b(sqrt|abs|round|floor|ceil|log10|log2|log|exp|pow|min|max|mod|sign|pi)\b/g;
 
 const FINQL_BOOLEAN = /\b(true|false)\b/gi;
 
 const FINQL_NUMBER = /\b\d+(?:\.\d+)?(?:[eE][+-]?\d+)?\b/g;
 
 const HIGHLIGHT_PRIORITY = {
-    lineCommand: 4,
-    inlineKeyword: 3,
+    lineCommand: 5,
+    inlineKeyword: 4,
+    builtin: 3,
     boolean: 2,
     number: 1,
 } as const;
@@ -36,6 +41,7 @@ type HighlightInterval = {
 const DECO = {
     lineCommand: Decoration.mark({ class: 'cm-finql-line-command' }),
     inlineKeyword: Decoration.mark({ class: 'cm-finql-inline-keyword' }),
+    builtin: Decoration.mark({ class: 'cm-finql-builtin' }),
     boolean: Decoration.mark({ class: 'cm-finql-boolean' }),
     number: Decoration.mark({ class: 'cm-finql-number' }),
 };
@@ -77,6 +83,10 @@ export const finqlEditorTheme = EditorView.theme({
     },
     '.cm-finql-boolean': {
         color: '#6a1b9a',
+    },
+    '.cm-finql-builtin': {
+        color: '#00838f',
+        fontWeight: 500,
     },
     '.cm-finql-number': {
         color: '#c62828',
@@ -134,6 +144,14 @@ function collectHighlightIntervals(document: Text): HighlightInterval[] {
             FINQL_INLINE_KEYWORDS,
             HIGHLIGHT_PRIORITY.inlineKeyword,
             DECO.inlineKeyword,
+            intervals
+        );
+        addRegexIntervals(
+            line.from,
+            text,
+            FINQL_BUILTINS,
+            HIGHLIGHT_PRIORITY.builtin,
+            DECO.builtin,
             intervals
         );
         addRegexIntervals(

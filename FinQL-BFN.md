@@ -1,198 +1,96 @@
-FinQL v1 Design Principles
-Line-based language
-One command per line
-Sequential execution
-Case-insensitive keywords
-Case-sensitive variable names
-No loops
-No nesting
-No blocks
-No semicolons
-🏗 1️⃣ Program Structure
+# FinQL v1.1 — Grammar & Design Notes
 
-A FinQL program is:
+## Design principles
 
-PROGRAM ::= LINE+
+- Line-based: one command per line
+- Sequential execution, no loops or blocks
+- Case-insensitive keywords, case-sensitive variable names
+- Stateless per request
 
-Each line contains exactly one command.
+---
 
-LINE ::= COMMAND NEWLINE
+## Program structure
+
+```ebnf
+PROGRAM   ::= STATEMENT+
+STATEMENT ::= SET_STMT | CALC_STMT | ANALYZE_STMT | FORECAST_STMT
+            | SCORE_STMT | ASSERT_STMT | OUTPUT_STMT
+```
 
 Blank lines are ignored.
 
-🧩 2️⃣ The Four Core Commands
-1️⃣ SET
-SET <identifier> = <literal>
-Grammar
-SET_STMT ::= "SET" IDENTIFIER "=" LITERAL
-Example
-SET income = 6000
-SET name = "Alice"
-2️⃣ CALCULATE
-CALCULATE <identifier> = <expression>
-Grammar
-CALC_STMT ::= "CALCULATE" IDENTIFIER "=" EXPRESSION
-Example
-CALCULATE surplus = income - expenses
-CALCULATE growth = savings _ 1.05
-3️⃣ ANALYZE
-ANALYZE <identifier> USING <identifier_list>
-Grammar
-ANALYZE_STMT ::= "ANALYZE" IDENTIFIER "USING" IDENTIFIER_LIST
-IDENTIFIER_LIST ::= IDENTIFIER ("," IDENTIFIER)_
-Example
-ANALYZE health USING surplus, income
+---
 
-This creates/sets variable health.
+## Commands
 
-4️⃣ OUTPUT
-OUTPUT <identifier_list>
-Grammar
-OUTPUT_STMT ::= "OUTPUT" IDENTIFIER_LIST
-Example
-OUTPUT surplus, health
+```ebnf
+SET_STMT      ::= "SET" IDENTIFIER "=" LITERAL
+CALC_STMT     ::= "CALCULATE" IDENTIFIER "=" EXPRESSION
+ANALYZE_STMT  ::= "ANALYZE" IDENTIFIER "USING" IDENTIFIER_LIST
+FORECAST_STMT ::= "FORECAST" IDENTIFIER "USING" IDENTIFIER_LIST "FOR" NUMBER "YEARS"
+SCORE_STMT    ::= "SCORE" IDENTIFIER "USING" IDENTIFIER_LIST
+ASSERT_STMT   ::= "ASSERT" EXPRESSION COMPARE_OP EXPRESSION
+OUTPUT_STMT   ::= "OUTPUT" IDENTIFIER_LIST
 
-Execution stops at OUTPUT.
+IDENTIFIER_LIST ::= IDENTIFIER ("," IDENTIFIER)*
+COMPARE_OP      ::= ">" | "<" | ">=" | "<=" | "==" | "!="
+```
 
-🔢 3️⃣ Expressions (Very Important)
+---
 
-We intentionally keep expressions simple.
+## Expressions
 
-Supported Operators
+Expressions are evaluated by [mathjs](https://mathjs.org). The full operator set is available:
 
--   -   - /
-          Expression Grammar
+```
++ - * / ^ ( )
+```
 
-We’ll support simple arithmetic with precedence:
+Allowed built-ins: `sqrt` `abs` `round` `floor` `ceil` `log` `log10` `log2` `exp` `pow` `min` `max` `mod` `sign` `pi` `e`
 
-EXPRESSION ::= TERM (( "+" | "-" ) TERM)_
-TERM ::= FACTOR (( "_" | "/" ) FACTOR)\*
-FACTOR ::= NUMBER | IDENTIFIER
+No arbitrary function calls beyond the above allowlist.
 
-No parentheses in v1.
-No nested function calls.
-No unary operators.
+---
 
-🔤 4️⃣ Identifiers
+## Identifiers & literals
 
-Rules:
+```ebnf
+IDENTIFIER ::= LETTER (LETTER | DIGIT | "_")*
+LITERAL    ::= NUMBER | STRING | BOOLEAN
+NUMBER     ::= DIGIT+ ("." DIGIT+)?
+STRING     ::= '"' .* '"'
+BOOLEAN    ::= "true" | "false"
+```
 
-Must start with a letter
-Can contain letters, numbers, underscore
-Case-sensitive
-Regex
-[a-zA-Z][a-zA-Z0-9_]\*
+---
 
-Valid:
+## Reserved keywords (case-insensitive)
 
-income
-monthly_expense
-x1
+`SET` `CALCULATE` `ANALYZE` `FORECAST` `SCORE` `ASSERT` `USING` `FOR` `YEARS` `OUTPUT`
 
-Invalid:
+---
 
-1income
-$total
-🔢 5️⃣ Literals
+## Semantic rules
 
-We support:
+1. Variables must be defined before use
+2. Division by zero throws a runtime error
+3. `ASSERT` halts execution with a structured error if the condition is false
+4. `OUTPUT` must appear exactly once and must be the last statement
+5. Variable names cannot be reserved keywords
 
-Number
-INTEGER ::= [0-9]+
-FLOAT ::= [0-9]+ "." [0-9]+
-NUMBER ::= INTEGER | FLOAT
-String (optional v1 support)
-STRING ::= "\"" .\* "\""
+---
 
-You can skip strings in v1 if you want to stay minimal.
+## Example
 
-🧱 6️⃣ Full Formal Grammar (EBNF Style)
-
-Here’s the complete v1 grammar:
-
-PROGRAM ::= STATEMENT+
-
-STATEMENT ::= SET_STMT
-| CALC_STMT
-| ANALYZE_STMT
-| OUTPUT_STMT
-
-SET_STMT ::= "SET" IDENTIFIER "=" LITERAL
-
-CALC_STMT ::= "CALCULATE" IDENTIFIER "=" EXPRESSION
-
-ANALYZE_STMT ::= "ANALYZE" IDENTIFIER "USING" IDENTIFIER_LIST
-
-OUTPUT_STMT ::= "OUTPUT" IDENTIFIER_LIST
-
-IDENTIFIER_LIST ::= IDENTIFIER ("," IDENTIFIER)\*
-
-EXPRESSION ::= TERM (("+" | "-") TERM)\*
-
-TERM ::= FACTOR (("_" | "/") FACTOR)_
-
-FACTOR ::= NUMBER | IDENTIFIER
-
-IDENTIFIER ::= LETTER (LETTER | DIGIT | "\_")\*
-
-LITERAL ::= NUMBER | STRING
-
-NUMBER ::= DIGIT+ ("." DIGIT+)?
-
-LETTER ::= "a".."z" | "A".."Z"
-
-DIGIT ::= "0".."9"
-🧠 7️⃣ Semantic Rules (Execution Rules)
-
-These are NOT grammar rules — they are runtime rules.
-
-Rule 1
-
-Variable must exist before use (except when being defined).
-
-Invalid:
-
-CALCULATE surplus = income - expenses
-
-If income wasn’t defined earlier.
-
-Rule 2
-
-Division by zero throws runtime error.
-
-Rule 3
-
-ANALYZE arguments must exist in context.
-
-Rule 4
-
-Only one OUTPUT allowed.
-
-Execution stops after OUTPUT.
-
-Rule 5
-
-Variables cannot overwrite system keywords.
-
-Invalid:
-
-SET OUTPUT = 5
-🔒 8️⃣ Reserved Keywords
-
-Case-insensitive:
-
-SET
-CALCULATE
-ANALYZE
-USING
-OUTPUT
-
-Cannot be used as identifiers.
-
-📌 Example Valid FinQL Program
+```finql
 SET income = 6000
 SET expenses = 4500
+SET rate = 0.05
 CALCULATE surplus = income - expenses
-CALCULATE rate = surplus / income
+CALCULATE savingsRate = surplus / income
 ANALYZE health USING surplus, income
-OUTPUT surplus, rate, health
+SCORE stability USING surplus, income
+FORECAST growth USING surplus, rate FOR 3 YEARS
+ASSERT surplus > 0
+OUTPUT surplus, savingsRate, health, stability, growth
+```

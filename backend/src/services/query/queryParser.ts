@@ -2,6 +2,9 @@ import type Command from './commands/command.js';
 import SetCommand from './commands/set.js';
 import CalculateCommand from './commands/calculate.js';
 import AnalyzeCommand from './commands/analyze.js';
+import ForecastCommand from './commands/forecast.js';
+import ScoreCommand from './commands/score.js';
+import AssertCommand from './commands/assert.js';
 import OutputCommand from './commands/output.js';
 import { QueryParseError } from './error.js';
 import { CommandType, LexedLine, QueryParserResult } from './types.js';
@@ -72,12 +75,21 @@ class QueryParser {
             case 'ANALYZE':
                 command = new AnalyzeCommand();
                 break;
+            case 'FORECAST':
+                command = new ForecastCommand();
+                break;
+            case 'SCORE':
+                command = new ScoreCommand();
+                break;
+            case 'ASSERT':
+                command = new AssertCommand();
+                break;
             case 'OUTPUT':
                 command = new OutputCommand();
                 break;
             default:
                 throw new QueryParseError(
-                    `${head || '(empty)'} is not a valid command`,
+                    `"${head || '(empty)'}" is not a valid command. Valid commands: SET, CALCULATE, ANALYZE, FORECAST, SCORE, ASSERT, OUTPUT`,
                     lineNumber
                 );
         }

@@ -20,6 +20,7 @@ services:
             - DATABASE_URL=postgres://postgres:password@postgres:5432/gatescale
             - REDIS_URL=redis://redis:6379
             - JWT_SECRET=supersecret
+            - API_KEY_HMAC_SECRET=change-me-in-production
             - NODE_ENV=production
         depends_on:
             postgres:

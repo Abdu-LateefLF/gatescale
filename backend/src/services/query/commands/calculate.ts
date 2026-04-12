@@ -1,11 +1,11 @@
 import Command from './command.js';
-import { CommandType, Expression, VariableType } from '../types.js';
+import { CommandType, VariableType } from '../types.js';
 import QueryContext from '../queryContext.js';
 import { QueryParseError } from '../error.js';
 import { ExpressionParser, evaluateExpression } from '../expression.js';
 
 class CalculateCommand extends Command {
-    expr?: Expression;
+    expr?: ExpressionParser;
 
     constructor() {
         super(CommandType.CALCULATE);
@@ -25,7 +25,6 @@ class CalculateCommand extends Command {
         }
 
         this.variable = m[1];
-
         this.validateVariableName(this.variable);
 
         const exprSource = m[2].trim();

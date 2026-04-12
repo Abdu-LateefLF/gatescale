@@ -59,9 +59,7 @@ export async function validateApiKey(
             return res.status(401).json({ error: 'Invalid API key' });
         }
 
-        console.log('Api Keys:', key, apiKey.keyHash);
-
-        const isKeyValid = await compareApiKey(key, apiKey.keyHash);
+        const isKeyValid = compareApiKey(key, apiKey.keyHash);
         if (!isKeyValid) {
             return res.status(401).json({ error: 'Invalid API key' });
         }

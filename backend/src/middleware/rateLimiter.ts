@@ -3,6 +3,8 @@ import cacheKeys from '../cache/cacheKeys.js';
 import cacheClient from '../cache/cacheClient.js';
 import { SubscriptionTier } from '../db/types.js';
 import { validate as uuidValidate } from 'uuid';
+import apiKeysRepository from '../repository/ApiKeysRepository.js';
+import userRepository from '../repository/UserRepository.js';
 
 export function userRateLimiter(maxRequests: number, windowSeconds: number) {
     return async (req: Request, res: Response, next: NextFunction) => {
@@ -41,9 +43,20 @@ export async function apiKeyRateLimiter(
     const keyId = req.apiKeyId;
     const key = cacheKeys.getApiKeyRateLimitKey(keyId);
 
-    const userTier = req.user?.tier as SubscriptionTier | undefined;
+    let userTier = req.user?.tier as SubscriptionTier | undefined;
     if (!userTier) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        const apiKey = await apiKeysRepository.findById(req.apiKeyId);
+        if (!apiKey) {
+            return res.status(401).json({ error: 'Invalid API key' });
+        }
+
+        const userId = apiKey?.userId;
+        const user = await userRepository.findById(userId);
+        if (!user) {
+            return res.status(401).json({ error: 'Invalid API key' });
+        }
+
+        userTier = user.tier;
     }
 
     const maxRequests = userTier === 'free' ? 100 : 1000;

@@ -15,6 +15,7 @@ import {
     ERROR_RESPONSE_SYNTAX,
     ERROR_RESPONSE_UNDEF,
     ERROR_RESPONSE_DIV,
+    ERROR_RESPONSE_ASSERT,
 } from '../data/docsExamples';
 
 const MONO = 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace';
@@ -125,8 +126,8 @@ function DocsPage() {
                     color="text.secondary"
                     sx={{ mt: 0.5, mb: 2, lineHeight: 1.7 }}
                 >
-                    FinQL v1 has four commands. Every line must start with one
-                    of them; anything else is a parse error.
+                    FinQL v1.1 has seven commands. Every line must start with
+                    one of them; anything else is a parse error.
                 </Typography>
 
                 <Stack spacing={3}>
@@ -197,17 +198,20 @@ function DocsPage() {
                             color="text.secondary"
                             sx={{ lineHeight: 1.7 }}
                         >
-                            Evaluates a mathematical expression and stores the
-                            result. Supports <InlineCode>+</InlineCode>{' '}
-                            <InlineCode>-</InlineCode>{' '}
-                            <InlineCode>*</InlineCode>{' '}
-                            <InlineCode>/</InlineCode>{' '}
-                            <InlineCode>^</InlineCode> (exponentiation), and
-                            parentheses for grouping. Every variable referenced
-                            must already be defined earlier in the script.
+                            Evaluates a math expression and stores the result.
+                            Operators: <InlineCode>+ - * / ^</InlineCode> and
+                            parentheses. Built-in functions:{' '}
+                            <InlineCode>
+                                sqrt abs round floor ceil log log10 log2 exp pow
+                                min max mod sign
+                            </InlineCode>
+                            . Constants: <InlineCode>pi</InlineCode>{' '}
+                            <InlineCode>e</InlineCode>. Every variable
+                            referenced must already be defined earlier in the
+                            script.
                         </Typography>
                         <Box sx={{ mt: 1 }}>
-                            <CodeBlock lang="finql">{`CALCULATE surplus = income - expenses\nCALCULATE savingsRate = surplus / income\nCALCULATE compound = principal * (1 + rate)^years`}</CodeBlock>
+                            <CodeBlock lang="finql">{`CALCULATE surplus = income - expenses\nCALCULATE compound = principal * (1 + rate) ^ years\nCALCULATE monthly = round(compound / 12, 2)\nCALCULATE logReturn = log(endPrice / startPrice)`}</CodeBlock>
                         </Box>
                     </Box>
 
@@ -240,11 +244,9 @@ function DocsPage() {
                             color="text.secondary"
                             sx={{ lineHeight: 1.7 }}
                         >
-                            Runs a rule-based financial analysis over the
-                            supplied variables and stores a label in{' '}
-                            <InlineCode>target</InlineCode>. In v1 the result is
-                            derived from the <em>savings rate</em> (
-                            <InlineCode>surplus / income</InlineCode>):
+                            Stores a label in <InlineCode>target</InlineCode>{' '}
+                            based on the savings rate (
+                            <InlineCode>a / b</InlineCode>):
                         </Typography>
                         <Stack
                             component="ul"
@@ -270,6 +272,120 @@ function DocsPage() {
                             <CodeBlock lang="finql">
                                 {'ANALYZE health USING surplus, income'}
                             </CodeBlock>
+                        </Box>
+                    </Box>
+
+                    {/* FORECAST */}
+                    <Box>
+                        <Stack
+                            direction="row"
+                            spacing={1}
+                            alignItems="center"
+                            sx={{ mb: 0.75 }}
+                        >
+                            <Chip
+                                label="FORECAST"
+                                size="small"
+                                sx={{
+                                    fontFamily: MONO,
+                                    fontWeight: 700,
+                                    bgcolor: 'primary.50',
+                                    color: 'primary.dark',
+                                    border: '1px solid',
+                                    borderColor: 'primary.200',
+                                }}
+                            />
+                            <InlineCode>
+                                FORECAST name USING principal, rate FOR n YEARS
+                            </InlineCode>
+                        </Stack>
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ lineHeight: 1.7 }}
+                        >
+                            Compound growth projection:{' '}
+                            <InlineCode>principal × (1 + rate)^n</InlineCode>,
+                            rounded to 2 decimal places. The first two{' '}
+                            <InlineCode>USING</InlineCode> variables are
+                            principal and rate.
+                        </Typography>
+                        <Box sx={{ mt: 1 }}>
+                            <CodeBlock lang="finql">{`SET principal = 10000\nSET rate = 0.05\nFORECAST futureValue USING principal, rate FOR 5 YEARS\nOUTPUT futureValue`}</CodeBlock>
+                        </Box>
+                    </Box>
+
+                    {/* SCORE */}
+                    <Box>
+                        <Stack
+                            direction="row"
+                            spacing={1}
+                            alignItems="center"
+                            sx={{ mb: 0.75 }}
+                        >
+                            <Chip
+                                label="SCORE"
+                                size="small"
+                                sx={{
+                                    fontFamily: MONO,
+                                    fontWeight: 700,
+                                    bgcolor: 'primary.50',
+                                    color: 'primary.dark',
+                                    border: '1px solid',
+                                    borderColor: 'primary.200',
+                                }}
+                            />
+                            <InlineCode>SCORE name USING a, b, …</InlineCode>
+                        </Stack>
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ lineHeight: 1.7 }}
+                        >
+                            Produces a score 0–100:{' '}
+                            <InlineCode>(a / b) × 100</InlineCode>, clamped.
+                            Requires at least two numeric variables; throws on
+                            division by zero.
+                        </Typography>
+                        <Box sx={{ mt: 1 }}>
+                            <CodeBlock lang="finql">{`SET income = 6000\nSET expenses = 4500\nCALCULATE surplus = income - expenses\nSCORE stability USING surplus, income\nOUTPUT stability`}</CodeBlock>
+                        </Box>
+                    </Box>
+
+                    {/* ASSERT */}
+                    <Box>
+                        <Stack
+                            direction="row"
+                            spacing={1}
+                            alignItems="center"
+                            sx={{ mb: 0.75 }}
+                        >
+                            <Chip
+                                label="ASSERT"
+                                size="small"
+                                sx={{
+                                    fontFamily: MONO,
+                                    fontWeight: 700,
+                                    bgcolor: 'primary.50',
+                                    color: 'primary.dark',
+                                    border: '1px solid',
+                                    borderColor: 'primary.200',
+                                }}
+                            />
+                            <InlineCode>ASSERT expression</InlineCode>
+                        </Stack>
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ lineHeight: 1.7 }}
+                        >
+                            Halts execution with a structured error if the
+                            condition is false. Operators:{' '}
+                            <InlineCode>{'> < >= <= == !='}</InlineCode>. Each
+                            side can be any numeric expression or variable.
+                        </Typography>
+                        <Box sx={{ mt: 1 }}>
+                            <CodeBlock lang="finql">{`SET income = 5000\nSET expenses = 6000\nCALCULATE surplus = income - expenses\nASSERT surplus > 0\nOUTPUT surplus`}</CodeBlock>
                         </Box>
                     </Box>
 
@@ -328,14 +444,23 @@ function DocsPage() {
                     Variable names must start with a letter and may contain
                     letters, digits, and underscores. They are case-sensitive.
                     The reserved words{' '}
-                    {['SET', 'CALCULATE', 'ANALYZE', 'USING', 'OUTPUT'].map(
-                        (kw, i, arr) => (
-                            <span key={kw}>
-                                <InlineCode>{kw}</InlineCode>
-                                {i < arr.length - 1 ? ', ' : ''}
-                            </span>
-                        )
-                    )}{' '}
+                    {[
+                        'SET',
+                        'CALCULATE',
+                        'ANALYZE',
+                        'FORECAST',
+                        'SCORE',
+                        'ASSERT',
+                        'USING',
+                        'FOR',
+                        'YEARS',
+                        'OUTPUT',
+                    ].map((kw, i, arr) => (
+                        <span key={kw}>
+                            <InlineCode>{kw}</InlineCode>
+                            {i < arr.length - 1 ? ', ' : ''}
+                        </span>
+                    ))}{' '}
                     cannot be used as variable names (case-insensitive check).
                 </Typography>
 
@@ -442,6 +567,10 @@ function DocsPage() {
                         [
                             '400 — Execution error (division by zero)',
                             ERROR_RESPONSE_DIV,
+                        ],
+                        [
+                            '400 — Execution error (assertion failed)',
+                            ERROR_RESPONSE_ASSERT,
                         ],
                     ].map(([label, code]) => (
                         <Box key={label}>
