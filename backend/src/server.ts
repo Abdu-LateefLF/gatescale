@@ -17,14 +17,19 @@ const app = express();
 
 if (process.env.NODE_ENV !== 'production') {
     dotenv.config();
+} else {
+    app.set('trust proxy', parseInt(process.env.TRUST_PROXY || '1'));
+}
+
+const clientUrl = process.env.CLIENT_URL;
+if (clientUrl) {
+    console.log('Configuring CORS for ', clientUrl);
     app.use(
         cors({
-            origin: process.env.CLIENT_URL,
+            origin: clientUrl,
             credentials: true,
         })
     );
-} else {
-    app.set('trust proxy', parseInt(process.env.TRUST_PROXY || '1'));
 }
 
 app.use(cookieParser());
