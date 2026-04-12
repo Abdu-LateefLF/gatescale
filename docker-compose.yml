@@ -6,7 +6,7 @@ services:
             context: .
             dockerfile: ./nginx/Dockerfile
         environment:
-            - NODE_ENV=production
+            - NODE_ENV=${NODE_ENV:-production}
         ports:
             - '80:80'
         depends_on:
@@ -17,37 +17,18 @@ services:
     api:
         build: ./backend
         environment:
-            - DATABASE_URL=postgres://postgres:password@postgres:5432/gatescale
-            - REDIS_URL=redis://redis:6379
-            - JWT_SECRET=supersecret
-            - API_KEY_HMAC_SECRET=change-me-in-production
-            - NODE_ENV=production
+            - DATABASE_URL=${DATABASE_URL}
+            - REDIS_URL=${REDIS_URL}
+            - JWT_SECRET=${JWT_SECRET}
+            - API_KEY_HMAC_SECRET=${API_KEY_HMAC_SECRET}
+            - NODE_ENV=${NODE_ENV:-production}
         depends_on:
-            postgres:
-                condition: service_healthy
             redis:
                 condition: service_started
         networks:
             - gatescale-network
         deploy:
             replicas: 2
-
-    postgres:
-        image: postgres:15
-        environment:
-            POSTGRES_USER: postgres
-            POSTGRES_PASSWORD: password
-            POSTGRES_DB: gatescale
-        volumes:
-            - postgres_data:/var/lib/postgresql/data
-        healthcheck:
-            test: ['CMD-SHELL', 'pg_isready -U postgres']
-            interval: 10s
-            timeout: 5s
-            retries: 5
-        networks:
-            - gatescale-network
-
     redis:
         image: redis:7
         networks:

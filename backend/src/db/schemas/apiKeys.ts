@@ -8,4 +8,4 @@ export const apiKeysTable = pgTable('api_keys', {
     userId: uuid().notNull(),
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
     expiresAt: timestamp({ withTimezone: true }).notNull(),
-});
+}).enableRLS();

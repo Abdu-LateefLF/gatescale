@@ -7,4 +7,4 @@ export const apiRequestLogsTable = pgTable('api_request_logs', {
     durationMs: integer('duration_ms').notNull(),
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
     path: text('path'),
-});
+}).enableRLS();

@@ -9,4 +9,4 @@ export const usersTable = pgTable('users', {
     role: userRole().notNull().default('user'),
     tier: subscriptionTier().notNull().default('free'),
     createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
-});
+}).enableRLS();
