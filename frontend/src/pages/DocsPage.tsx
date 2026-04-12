@@ -107,13 +107,63 @@ function DocsPage() {
                     sx={{ maxWidth: 720, lineHeight: 1.75 }}
                 >
                     FinQL is a lightweight, line-based language for financial
-                    computation. Each non-empty line is one statement. Scripts
-                    are stateless — every request runs independently with no
-                    shared state between calls. The playground in the dashboard
-                    runs the same engine as the HTTP API.
+                    calculations. Each non-empty line is a single statement.
+                    Scripts are stateless: every request runs independently,
+                    with no shared state between calls. The dashboard playground
+                    uses the same engine as the HTTP API.
                 </Typography>
 
+                {/* ── Section nav ── */}
+                <Stack
+                    direction="row"
+                    spacing={0.5}
+                    sx={{
+                        mt: 3,
+                        mb: 1,
+                        borderBottom: '1px solid',
+                        borderColor: 'divider',
+                        pb: 0,
+                    }}
+                >
+                    {[
+                        { label: 'Examples', id: 'examples' },
+                        { label: 'Commands', id: 'commands' },
+                        { label: 'API Reference', id: 'api-reference' },
+                    ].map(({ label, id }) => (
+                        <Box
+                            key={id}
+                            component="button"
+                            onClick={() =>
+                                document
+                                    .getElementById(id)
+                                    ?.scrollIntoView({ behavior: 'smooth' })
+                            }
+                            sx={{
+                                px: 1.5,
+                                py: 1,
+                                fontSize: 13,
+                                fontWeight: 500,
+                                color: 'text.secondary',
+                                textDecoration: 'none',
+                                background: 'none',
+                                border: 'none',
+                                borderBottom: '2px solid transparent',
+                                mb: '-1px',
+                                cursor: 'pointer',
+                                transition: 'color 0.15s, border-color 0.15s',
+                                '&:hover': {
+                                    color: 'primary.main',
+                                    borderBottomColor: 'primary.main',
+                                },
+                            }}
+                        >
+                            {label}
+                        </Box>
+                    ))}
+                </Stack>
+
                 {/* ── Full example ── */}
+                <Box id="examples" sx={{ scrollMarginTop: 24 }} />
                 <SectionTitle>Example script</SectionTitle>
                 <CodeBlock lang="finql">{FULL_EXAMPLE}</CodeBlock>
                 <SectionTitle>Example response</SectionTitle>
@@ -122,6 +172,7 @@ function DocsPage() {
                 <Divider sx={{ my: 4 }} />
 
                 {/* ── Commands ── */}
+                <Box id="commands" sx={{ scrollMarginTop: 24 }} />
                 <Typography variant="h6" sx={{ fontWeight: 700 }}>
                     Commands
                 </Typography>
@@ -130,8 +181,8 @@ function DocsPage() {
                     color="text.secondary"
                     sx={{ mt: 0.5, mb: 2, lineHeight: 1.7 }}
                 >
-                    FinQL v1.1 has seven commands. Every line must start with
-                    one of them; anything else is a parse error.
+                    FinQL v1.1 supports seven commands. Every non-empty line
+                    must start with one of them. Anything else is a parse error.
                 </Typography>
 
                 <Stack spacing={3}>
@@ -163,12 +214,12 @@ function DocsPage() {
                             sx={{ lineHeight: 1.7 }}
                         >
                             Assigns a literal value to a variable. Supported
-                            literal types are <strong>numbers</strong> (integer
-                            or decimal), <strong>booleans</strong> (
+                            literals are <strong>numbers</strong> (integer or
+                            decimal), <strong>booleans</strong> (
                             <InlineCode>true</InlineCode> /{' '}
                             <InlineCode>false</InlineCode>), and{' '}
-                            <strong>quoted strings</strong>. The variable is
-                            then available to all subsequent statements.
+                            <strong>quoted strings</strong>. The variable can
+                            then be used by later statements.
                         </Typography>
                         <Box sx={{ mt: 1 }}>
                             <CodeBlock lang="finql">{`SET income = 6000\nSET rate = 0.05\nSET label = "monthly"`}</CodeBlock>
@@ -203,15 +254,15 @@ function DocsPage() {
                             sx={{ lineHeight: 1.7 }}
                         >
                             Evaluates a math expression and stores the result.
-                            Operators: <InlineCode>+ - * / ^</InlineCode> and
+                            Supports <InlineCode>+ - * / ^</InlineCode> and
                             parentheses. Built-in functions:{' '}
                             <InlineCode>
                                 sqrt abs round floor ceil log log10 log2 exp pow
                                 min max mod sign
                             </InlineCode>
-                            . Constants: <InlineCode>pi</InlineCode>{' '}
-                            <InlineCode>e</InlineCode>. Every variable
-                            referenced must already be defined earlier in the
+                            . Constants: <InlineCode>pi</InlineCode> and{' '}
+                            <InlineCode>e</InlineCode>. Every referenced
+                            variable must already be defined earlier in the
                             script.
                         </Typography>
                         <Box sx={{ mt: 1 }}>
@@ -308,11 +359,11 @@ function DocsPage() {
                             color="text.secondary"
                             sx={{ lineHeight: 1.7 }}
                         >
-                            Compound growth projection:{' '}
+                            Calculates a compound-growth projection:{' '}
                             <InlineCode>principal × (1 + rate)^n</InlineCode>,
-                            rounded to 2 decimal places. The first two{' '}
-                            <InlineCode>USING</InlineCode> variables are
-                            principal and rate.
+                            rounded to 2 decimal places. The first two values in{' '}
+                            <InlineCode>USING</InlineCode> are the principal and
+                            rate.
                         </Typography>
                         <Box sx={{ mt: 1 }}>
                             <CodeBlock lang="finql">{`SET principal = 10000\nSET rate = 0.05\nFORECAST futureValue USING principal, rate FOR 5 YEARS\nOUTPUT futureValue`}</CodeBlock>
@@ -346,10 +397,10 @@ function DocsPage() {
                             color="text.secondary"
                             sx={{ lineHeight: 1.7 }}
                         >
-                            Produces a score 0–100:{' '}
+                            Produces a score from 0 to 100:{' '}
                             <InlineCode>(a / b) × 100</InlineCode>, clamped.
-                            Requires at least two numeric variables; throws on
-                            division by zero.
+                            Requires at least two numeric variables and throws
+                            on division by zero.
                         </Typography>
                         <Box sx={{ mt: 1 }}>
                             <CodeBlock lang="finql">{`SET income = 6000\nSET expenses = 4500\nCALCULATE surplus = income - expenses\nSCORE stability USING surplus, income\nOUTPUT stability`}</CodeBlock>
@@ -383,8 +434,8 @@ function DocsPage() {
                             color="text.secondary"
                             sx={{ lineHeight: 1.7 }}
                         >
-                            Halts execution with a structured error if the
-                            condition is false. Operators:{' '}
+                            Stops execution and returns a structured error if
+                            the condition is false. Supported operators:{' '}
                             <InlineCode>{'> < >= <= == !='}</InlineCode>. Each
                             side can be any numeric expression or variable.
                         </Typography>
@@ -420,7 +471,7 @@ function DocsPage() {
                             color="text.secondary"
                             sx={{ lineHeight: 1.7 }}
                         >
-                            Returns the listed variables as the response and
+                            Returns the listed variables in the response and
                             ends execution. <Keyword>OUTPUT</Keyword> must
                             appear exactly once and must be the{' '}
                             <strong>last</strong> statement in the script.
@@ -446,7 +497,7 @@ function DocsPage() {
                     sx={{ mt: 0.5, lineHeight: 1.7 }}
                 >
                     Variable names must start with a letter and may contain
-                    letters, digits, and underscores. They are case-sensitive.
+                    letters, digits, and underscores. Names are case-sensitive.
                     The reserved words{' '}
                     {[
                         'SET',
@@ -465,12 +516,13 @@ function DocsPage() {
                             {i < arr.length - 1 ? ', ' : ''}
                         </span>
                     ))}{' '}
-                    cannot be used as variable names (case-insensitive check).
+                    cannot be used as variable names, regardless of case.
                 </Typography>
 
                 <Divider sx={{ my: 4 }} />
 
                 {/* ── API reference ── */}
+                <Box id="api-reference" sx={{ scrollMarginTop: 24 }} />
                 <Typography variant="h6" sx={{ fontWeight: 700 }}>
                     API reference
                 </Typography>
@@ -479,9 +531,10 @@ function DocsPage() {
                     color="text.secondary"
                     sx={{ mt: 0.5, mb: 2, lineHeight: 1.7 }}
                 >
-                    The HTTP API accepts a FinQL script as a JSON body and
-                    authenticates via an API key header. Create keys in the
-                    dashboard — the full secret is shown only once.
+                    The HTTP API accepts a FinQL script in a JSON body and
+                    authenticates requests with an API key header. You can
+                    create keys in the dashboard. Note: the full secret is shown
+                    only once on creation.
                 </Typography>
 
                 <SectionTitle>Endpoint</SectionTitle>
@@ -513,9 +566,9 @@ function DocsPage() {
                     color="text.secondary"
                     sx={{ mb: 1, lineHeight: 1.7 }}
                 >
-                    The <InlineCode>query</InlineCode> field is the full FinQL
-                    script as a single string. Use <InlineCode>\n</InlineCode>{' '}
-                    to separate statements.
+                    The <InlineCode>query</InlineCode> field contains the full
+                    FinQL script as a single string. Separate statements with{' '}
+                    <InlineCode>\n</InlineCode>.
                 </Typography>
                 <CodeBlock lang="http">{REQUEST_EXAMPLE}</CodeBlock>
 
@@ -525,11 +578,11 @@ function DocsPage() {
                     {[
                         [
                             'results',
-                            'Object mapping each OUTPUT variable name to its value.',
+                            'Maps each variable named in OUTPUT to its value.',
                         ],
                         [
                             'executionTimeMs',
-                            'Server-side execution time in milliseconds.',
+                            'Execution time on the server, in milliseconds.',
                         ],
                     ].map(([field, desc]) => (
                         <Stack
@@ -553,9 +606,9 @@ function DocsPage() {
                     sx={{ mb: 1.5, lineHeight: 1.7 }}
                 >
                     All errors return a JSON body with an{' '}
-                    <InlineCode>error</InlineCode> message and, when applicable,
-                    the <InlineCode>line</InlineCode> number where the problem
-                    occurred.
+                    <InlineCode>error</InlineCode> message and, when relevant, a{' '}
+                    <InlineCode>line</InlineCode> number showing where the
+                    problem occurred.
                 </Typography>
 
                 <Stack spacing={2}>

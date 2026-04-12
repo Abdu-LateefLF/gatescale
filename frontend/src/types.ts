@@ -62,6 +62,7 @@ export interface MetricsSummary {
     totalRequests: number;
     requestsToday: number;
     errorRate: number;
+    dailyLimit: number;
     usagePerApiKey: ApiKeyUsageStat[];
 }
 

@@ -8,8 +8,12 @@ const VALID_RANGES: TimeRange[] = ['24h', '7d', '30d'];
 class MetricsController {
     async getMetrics(req: Request, res: Response) {
         const userId = req.user!.userId;
-        const metrics =
-            await apiRequestLogsRepository.getMetricsByUserId(userId);
+        const tier = req.user!.tier;
+        const dailyLimit = tier === 'free' ? 100 : 1000;
+        const metrics = await apiRequestLogsRepository.getMetricsByUserId(
+            userId,
+            dailyLimit
+        );
         res.json(metrics);
     }
 

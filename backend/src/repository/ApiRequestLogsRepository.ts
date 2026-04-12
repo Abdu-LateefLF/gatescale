@@ -24,6 +24,7 @@ export interface MetricsSummary {
     totalRequests: number;
     requestsToday: number;
     errorRate: number;
+    dailyLimit: number;
     usagePerApiKey: ApiKeyUsageStat[];
 }
 
@@ -48,7 +49,7 @@ class ApiRequestLogsRepository {
         await db.insert(apiRequestLogsTable).values(params);
     }
 
-    async getMetricsByUserId(userId: string): Promise<MetricsSummary> {
+    async getMetricsByUserId(userId: string, dailyLimit: number): Promise<MetricsSummary> {
         const todayStart = new Date();
         todayStart.setHours(0, 0, 0, 0);
 
@@ -114,6 +115,7 @@ class ApiRequestLogsRepository {
                 totalRequests > 0
                     ? Math.round((errorCount / totalRequests) * 10000) / 100
                     : 0,
+            dailyLimit,
             usagePerApiKey: perKeyRows.map((row) => ({
                 apiKeyId: row.apiKeyId,
                 apiKeyName: row.apiKeyName,

@@ -135,6 +135,9 @@ function Metrics({
                                 Total Requests
                             </TableCell>
                             <TableCell sx={{ fontWeight: 600 }} align="right">
+                                Daily Limit
+                            </TableCell>
+                            <TableCell sx={{ fontWeight: 600 }} align="right">
                                 Errors
                             </TableCell>
                             <TableCell sx={{ fontWeight: 600 }} align="right">
@@ -157,6 +160,9 @@ function Metrics({
                                     <TableCell>{row.apiKeyName}</TableCell>
                                     <TableCell align="right">
                                         {row.totalRequests.toLocaleString()}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        {metrics.dailyLimit.toLocaleString()}
                                     </TableCell>
                                     <TableCell align="right">
                                         {row.errorRequests.toLocaleString()}
