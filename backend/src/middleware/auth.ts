@@ -4,6 +4,7 @@ import { AuthenticationError } from '../utils/error';
 import { UserRole } from '../db/types';
 import apiKeysRepository from '../repository/ApiKeysRepository';
 import { validate as uuidValidate } from 'uuid';
+import { compareApiKey } from '../utils/apiKey';
 
 export type UserPayload = {
     userId: string;
@@ -15,7 +16,7 @@ export function authenticate(role?: UserRole) {
     return (req: Request, res: Response, next: NextFunction) => {
         const token = req.cookies.accessToken;
         if (!token) {
-            return res.status(401).json({ message: 'Unauthorized' });
+            return res.status(401).json({ error: 'Unauthorized' });
         }
 
         try {
@@ -26,13 +27,13 @@ export function authenticate(role?: UserRole) {
             }
 
             if (role && decoded.role !== role) {
-                return res.status(403).json({ message: 'Forbidden' });
+                return res.status(403).json({ error: 'Forbidden' });
             }
 
             req.user = decoded;
             return next();
         } catch (err) {
-            return res.status(401).json({ message: 'Invalid token' });
+            return res.status(401).json({ error: 'Invalid token' });
         }
     };
 }
@@ -44,27 +45,34 @@ export async function validateApiKey(
 ) {
     const key = req.headers['x-api-key'];
     if (!key || typeof key !== 'string') {
-        return res.status(401).json({ message: 'Missing API key' });
+        return res.status(401).json({ error: 'Missing API key' });
     }
 
     const keyId = key.split('.')[0].split('_')[1];
     if (!keyId || !uuidValidate(keyId)) {
-        return res.status(401).json({ message: 'Invalid API key' });
+        return res.status(401).json({ error: 'Invalid API key' });
     }
 
     try {
         const apiKey = await apiKeysRepository.findById(keyId);
         if (!apiKey) {
-            return res.status(401).json({ message: 'Invalid API key' });
+            return res.status(401).json({ error: 'Invalid API key' });
+        }
+
+        console.log('Api Keys:', key, apiKey.keyHash);
+
+        const isKeyValid = await compareApiKey(key, apiKey.keyHash);
+        if (!isKeyValid) {
+            return res.status(401).json({ error: 'Invalid API key' });
         }
 
         if (!apiKey.isActive || apiKey.expiresAt < new Date()) {
             return res
                 .status(401)
-                .json({ message: 'API key is inactive or has expired' });
+                .json({ error: 'API key is inactive or has expired' });
         }
     } catch (err) {
-        return res.status(500).json({ message: 'Internal server error' });
+        return res.status(500).json({ error: 'Internal server error' });
     }
 
     next();
@@ -76,12 +84,12 @@ export async function validateApiKeyForPlayground(
     next: NextFunction
 ) {
     if (!req.user?.userId) {
-        return res.status(401).json({ message: 'Unauthorized' });
+        return res.status(401).json({ error: 'Unauthorized' });
     }
 
     const apiKeyId = req.params.apiKeyId;
     if (!apiKeyId || typeof apiKeyId !== 'string' || !uuidValidate(apiKeyId)) {
-        return res.status(401).json({ message: 'Invalid API key ID' });
+        return res.status(401).json({ error: 'Invalid API key ID' });
     }
 
     try {
@@ -90,16 +98,16 @@ export async function validateApiKeyForPlayground(
             apiKeyId
         );
         if (!apiKey) {
-            return res.status(401).json({ message: 'Invalid API key ID' });
+            return res.status(401).json({ error: 'Invalid API key' });
         }
 
         if (!apiKey.isActive || apiKey.expiresAt < new Date()) {
             return res
                 .status(401)
-                .json({ message: 'API key is inactive or has expired' });
+                .json({ error: 'API key is inactive or has expired' });
         }
     } catch (err) {
-        return res.status(500).json({ message: 'Internal server error' });
+        return res.status(500).json({ error: 'Internal server error' });
     }
 
     next();

@@ -28,9 +28,13 @@ function PublicNavBar({ highlight }: PublicNavBarProps) {
                 component={RouterLink}
                 to="/"
                 color="inherit"
-                sx={{ fontWeight: 700, fontSize: '1rem', textTransform: 'none' }}
+                sx={{
+                    fontWeight: 700,
+                    fontSize: '1rem',
+                    textTransform: 'none',
+                }}
             >
-                Gate Scale
+                FinQL
             </Button>
 
             <Stack direction="row" spacing={1} alignItems="center">
