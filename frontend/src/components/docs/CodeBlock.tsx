@@ -1,6 +1,8 @@
 import { Box, Typography } from '@mui/material';
+import { tokenize, C } from '../../utils/codeHighlight';
+import type { CodeLang } from '../../utils/codeHighlight';
 
-export type CodeLang = 'finql' | 'json' | 'http';
+export type { CodeLang };
 
 const MONO = 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace';
 
@@ -16,6 +18,8 @@ interface CodeBlockProps {
 }
 
 function CodeBlock({ children, lang = 'finql' }: CodeBlockProps) {
+    const tokens = tokenize(children, lang);
+
     return (
         <Box
             sx={{
@@ -43,7 +47,12 @@ function CodeBlock({ children, lang = 'finql' }: CodeBlockProps) {
                     {['#FF5F57', '#FEBC2E', '#28C840'].map((c) => (
                         <Box
                             key={c}
-                            sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: c }}
+                            sx={{
+                                width: 10,
+                                height: 10,
+                                borderRadius: '50%',
+                                bgcolor: c,
+                            }}
                         />
                     ))}
                 </Box>
@@ -60,6 +69,7 @@ function CodeBlock({ children, lang = 'finql' }: CodeBlockProps) {
                     {LANG_LABEL[lang]}
                 </Typography>
             </Box>
+
             <Box
                 component="pre"
                 sx={{
@@ -67,7 +77,7 @@ function CodeBlock({ children, lang = 'finql' }: CodeBlockProps) {
                     px: 2,
                     py: 1.75,
                     bgcolor: '#1a1b26',
-                    color: '#c0caf5',
+                    color: C.base,
                     fontFamily: MONO,
                     fontSize: '0.8125rem',
                     lineHeight: 1.7,
@@ -75,7 +85,11 @@ function CodeBlock({ children, lang = 'finql' }: CodeBlockProps) {
                     overflowX: 'auto',
                 }}
             >
-                {children}
+                {tokens.map((token, i) => (
+                    <span key={i} style={{ color: token.color }}>
+                        {token.text}
+                    </span>
+                ))}
             </Box>
         </Box>
     );
