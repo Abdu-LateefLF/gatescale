@@ -1,3 +1,5 @@
+import { BASE_API_URL } from '../apiClient';
+
 export const FULL_EXAMPLE = `SET income = 6000
 SET expenses = 4500
 SET rate = 0.05
@@ -20,8 +22,14 @@ export const FULL_RESPONSE = `{
   "executionTimeMs": 14
 }`;
 
+const apiUrl = BASE_API_URL.replace('https://', '')
+    .replace('http://', '')
+    .replace('www.', '')
+    .replace('/api', '')
+    .replace('//', '/');
+
 export const REQUEST_EXAMPLE = `POST /api/run HTTP/1.1
-Host: your-api-host
+Host: ${apiUrl}
 x-api-key: YOUR_API_KEY
 Content-Type: application/json
 
