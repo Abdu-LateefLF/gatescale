@@ -52,7 +52,7 @@ class AuthController {
                 ...(COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
             });
             res.clearCookie('refreshToken', {
-                path: '/',
+                path: '/auth/refresh-toke',
                 ...(COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
             });
             throw error;
