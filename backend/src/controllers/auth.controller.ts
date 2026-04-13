@@ -5,7 +5,7 @@ import { BadRequestError } from '../utils/error.js';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-const baseCookieOptions: CookieOptions = {
+const cookieOptions: CookieOptions = {
     httpOnly: true,
     secure: true,
     sameSite: isProduction ? 'lax' : 'none',
@@ -16,14 +16,8 @@ class AuthController {
         const { email, password } = req.body as LoginRequest;
         const result = await authService.login(email, password);
 
-        res.cookie('accessToken', result.accessToken, {
-            ...baseCookieOptions,
-            path: '/',
-        });
-        res.cookie('refreshToken', result.refreshToken, {
-            ...baseCookieOptions,
-            path: '/',
-        });
+        res.cookie('accessToken', result.accessToken, cookieOptions);
+        res.cookie('refreshToken', result.refreshToken, cookieOptions);
 
         res.json({ message: 'Login successful' });
     }
@@ -39,19 +33,12 @@ class AuthController {
             const { accessToken } =
                 await authService.refreshToken(refreshToken);
 
-            res.cookie('accessToken', accessToken, {
-                ...baseCookieOptions,
-                path: '/',
-            });
+            res.cookie('accessToken', accessToken, cookieOptions);
 
             res.json({ message: 'Token refresh successful' });
         } catch (error) {
-            res.clearCookie('accessToken', {
-                path: '/',
-            });
-            res.clearCookie('refreshToken', {
-                path: '/',
-            });
+            res.clearCookie('accessToken');
+            res.clearCookie('refreshToken');
             throw error;
         }
     }
@@ -63,12 +50,8 @@ class AuthController {
     }
 
     async logout(req: Request, res: Response) {
-        res.clearCookie('accessToken', {
-            path: '/',
-        });
-        res.clearCookie('refreshToken', {
-            path: '/',
-        });
+        res.clearCookie('accessToken');
+        res.clearCookie('refreshToken');
         res.json({ message: 'Logout successful' });
     }
 }
