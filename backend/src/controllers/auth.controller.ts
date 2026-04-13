@@ -3,12 +3,10 @@ import { LoginRequest, RegisterRequest } from '../schemas/auth.schema.js';
 import authService from '../services/auth.service.js';
 import { BadRequestError } from '../utils/error.js';
 
-const isProduction = process.env.NODE_ENV === 'production';
-
 const cookieOptions: CookieOptions = {
     httpOnly: true,
-    secure: isProduction ? undefined : true,
-    sameSite: isProduction ? 'lax' : 'none',
+    secure: true,
+    sameSite: 'none',
 };
 
 class AuthController {
