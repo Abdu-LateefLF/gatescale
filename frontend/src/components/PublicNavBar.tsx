@@ -1,4 +1,4 @@
-import { Button, Stack, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import BrandLogo from './BrandLogo';
@@ -14,9 +14,10 @@ function PublicNavBar({ highlight }: PublicNavBarProps) {
 
     return (
         <Stack
-            direction="row"
-            alignItems="center"
+            direction={{ xs: 'column', sm: 'row' }}
+            alignItems={{ xs: 'stretch', sm: 'center' }}
             justifyContent="space-between"
+            spacing={{ xs: 1.5, sm: 0 }}
             sx={{
                 py: 1.5,
                 px: { xs: 2, sm: 3 },
@@ -25,14 +26,23 @@ function PublicNavBar({ highlight }: PublicNavBarProps) {
                 width: '100%',
             }}
         >
-            <BrandLogo />
+            <Box sx={{ display: 'flex', justifyContent: { xs: 'center', sm: 'flex-start' } }}>
+                <BrandLogo />
+            </Box>
 
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Stack
+                direction="row"
+                spacing={1}
+                alignItems="center"
+                justifyContent={{ xs: 'center', sm: 'flex-end' }}
+                useFlexGap
+                sx={{ flexWrap: 'wrap', width: '100%' }}
+            >
                 {highlight === 'docs' ? (
                     <Typography
                         variant="body2"
                         color="primary"
-                        sx={{ fontWeight: 600, px: 1 }}
+                        sx={{ fontWeight: 600, px: 1, py: 0.5 }}
                     >
                         Docs
                     </Typography>

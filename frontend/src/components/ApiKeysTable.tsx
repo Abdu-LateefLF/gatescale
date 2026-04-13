@@ -6,6 +6,7 @@ import {
     Menu,
     MenuItem,
     Paper,
+    Stack,
     Table,
     TableBody,
     TableCell,
@@ -69,6 +70,11 @@ function ApiKeysTable({
         return new Date(date).toLocaleString('en-US', options);
     };
 
+    const handleOpenRevokeConfirm = (apiKey: ProtectedApiKey) => {
+        setSelectedApiKey(apiKey);
+        setOpenConfirmModal(true);
+    };
+
     return (
         <Box sx={{ width: '100%' }}>
             <Box
@@ -110,6 +116,7 @@ function ApiKeysTable({
                 sx={{
                     borderRadius: 1,
                     overflow: 'hidden',
+                    display: { xs: 'none', sm: 'block' },
                 }}
             >
                 <Table size="small">
@@ -186,6 +193,81 @@ function ApiKeysTable({
                     </TableBody>
                 </Table>
             </TableContainer>
+
+            <Stack spacing={1.5} sx={{ display: { xs: 'flex', sm: 'none' } }}>
+                {apiKeys.map((apiKey) => (
+                    <Paper
+                        key={apiKey.id}
+                        variant="outlined"
+                        sx={{ p: 2, borderRadius: 1 }}
+                    >
+                        <Stack spacing={1.5}>
+                            <Box>
+                                <Typography
+                                    variant="subtitle2"
+                                    sx={{ fontWeight: 600, color: 'text.primary' }}
+                                >
+                                    {apiKey.name}
+                                </Typography>
+                                <Typography
+                                    variant="caption"
+                                    color="text.secondary"
+                                >
+                                    Secret
+                                </Typography>
+                                <Box sx={{ mt: 0.5 }}>
+                                    <Chip
+                                        size="small"
+                                        label="Hidden"
+                                        variant="outlined"
+                                        sx={{
+                                            fontFamily: 'monospace',
+                                            fontSize: 11,
+                                        }}
+                                    />
+                                </Box>
+                            </Box>
+
+                            <Box>
+                                <Typography variant="caption" color="text.secondary">
+                                    Created
+                                </Typography>
+                                <Typography variant="body2">
+                                    {formatDate(apiKey.createdAt)}
+                                </Typography>
+                            </Box>
+
+                            <Box>
+                                <Typography variant="caption" color="text.secondary">
+                                    Expires
+                                </Typography>
+                                <Typography variant="body2">
+                                    {formatDate(apiKey.expiresAt)}
+                                </Typography>
+                            </Box>
+
+                            <Button
+                                variant="outlined"
+                                color="error"
+                                size="small"
+                                onClick={() => handleOpenRevokeConfirm(apiKey)}
+                                sx={{ alignSelf: 'flex-start', textTransform: 'none' }}
+                            >
+                                Revoke key
+                            </Button>
+                        </Stack>
+                    </Paper>
+                ))}
+
+                {apiKeys.length === 0 && (
+                    <Paper variant="outlined" sx={{ p: 3, textAlign: 'center' }}>
+                        <Typography variant="body2" color="text.secondary">
+                            No API keys yet. Create one to use the API and
+                            playground.
+                        </Typography>
+                    </Paper>
+                )}
+            </Stack>
 
             <Menu open={openMenu} onClose={handleCloseMenu} anchorEl={anchorEl}>
                 <MenuItem onClick={() => setOpenConfirmModal(true)}>

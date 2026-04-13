@@ -3,6 +3,7 @@ import {
     CircularProgress,
     Grid,
     Paper,
+    Stack,
     Table,
     TableBody,
     TableCell,
@@ -129,7 +130,11 @@ function AdminMetrics({
             <TableContainer
                 component={Paper}
                 variant="outlined"
-                sx={{ borderRadius: 1, overflow: 'hidden' }}
+                sx={{
+                    borderRadius: 1,
+                    overflow: 'hidden',
+                    display: { xs: 'none', sm: 'block' },
+                }}
             >
                 <Table size="small">
                     <TableHead>
@@ -202,6 +207,96 @@ function AdminMetrics({
                     </TableBody>
                 </Table>
             </TableContainer>
+
+            <Stack spacing={1.5} sx={{ display: { xs: 'flex', sm: 'none' } }}>
+                {metrics.usagePerUser.map((row) => {
+                    const userErrorRate =
+                        row.totalRequests > 0
+                            ? Math.round((row.errorRequests / row.totalRequests) * 10000) /
+                              100
+                            : 0;
+
+                    return (
+                        <Paper
+                            key={row.userId}
+                            variant="outlined"
+                            sx={{ p: 2, borderRadius: 1 }}
+                        >
+                            <Stack spacing={1}>
+                                <Box>
+                                    <Typography
+                                        variant="subtitle2"
+                                        sx={{ fontWeight: 600, color: 'text.primary' }}
+                                    >
+                                        {row.userName}
+                                    </Typography>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {row.userEmail}
+                                    </Typography>
+                                </Box>
+
+                                <Stack
+                                    direction="row"
+                                    justifyContent="space-between"
+                                    spacing={2}
+                                >
+                                    <Typography variant="body2" color="text.secondary">
+                                        Total Requests
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        {row.totalRequests.toLocaleString()}
+                                    </Typography>
+                                </Stack>
+
+                                <Stack
+                                    direction="row"
+                                    justifyContent="space-between"
+                                    spacing={2}
+                                >
+                                    <Typography variant="body2" color="text.secondary">
+                                        Errors
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        {row.errorRequests.toLocaleString()}
+                                    </Typography>
+                                </Stack>
+
+                                <Stack
+                                    direction="row"
+                                    justifyContent="space-between"
+                                    spacing={2}
+                                >
+                                    <Typography variant="body2" color="text.secondary">
+                                        Error Rate
+                                    </Typography>
+                                    <Typography
+                                        variant="body2"
+                                        sx={{
+                                            color:
+                                                userErrorRate > 10
+                                                    ? 'error.main'
+                                                    : userErrorRate > 5
+                                                      ? 'warning.main'
+                                                      : 'success.main',
+                                            fontWeight: 600,
+                                        }}
+                                    >
+                                        {userErrorRate}%
+                                    </Typography>
+                                </Stack>
+                            </Stack>
+                        </Paper>
+                    );
+                })}
+
+                {metrics.usagePerUser.length === 0 && (
+                    <Paper variant="outlined" sx={{ p: 3, textAlign: 'center' }}>
+                        <Typography variant="body2" color="text.secondary">
+                            No requests recorded yet.
+                        </Typography>
+                    </Paper>
+                )}
+            </Stack>
         </Box>
     );
 }

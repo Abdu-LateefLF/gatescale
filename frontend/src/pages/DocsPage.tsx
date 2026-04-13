@@ -37,30 +37,47 @@ function DocsPage() {
                 }}
             >
                 {/* ── Nav ── */}
-                <Box
+                <Stack
                     sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
                         mb: 3,
+                        alignItems: { xs: 'stretch', sm: 'center' },
+                        justifyContent: 'space-between',
+                        flexDirection: { xs: 'column', sm: 'row' },
+                        gap: 1.5,
                     }}
                 >
-                    <Stack direction="row" spacing={1.5} alignItems="center">
+                    <Stack
+                        direction="row"
+                        spacing={1.5}
+                        alignItems="center"
+                        justifyContent={{ xs: 'center', sm: 'flex-start' }}
+                    >
                         <BrandLogo />
                         <Typography
                             variant="h4"
                             component="h1"
-                            sx={{ fontWeight: 700, color: 'text.primary' }}
+                            sx={{
+                                fontWeight: 700,
+                                color: 'text.primary',
+                                fontSize: { xs: '1.75rem', sm: '2.125rem' },
+                            }}
                         >
                             reference
                         </Typography>
                     </Stack>
 
-                    <Stack direction="row" spacing={1} alignItems="center">
+                    <Stack
+                        direction="row"
+                        spacing={1}
+                        alignItems="center"
+                        justifyContent={{ xs: 'center', sm: 'flex-end' }}
+                        useFlexGap
+                        sx={{ flexWrap: 'wrap', width: '100%' }}
+                    >
                         <Typography
                             variant="body2"
                             color="primary"
-                            sx={{ fontWeight: 600, px: 1 }}
+                            sx={{ fontWeight: 600, px: 1, py: 0.5 }}
                         >
                             Docs
                         </Typography>
@@ -98,7 +115,7 @@ function DocsPage() {
                             </>
                         ) : null}
                     </Stack>
-                </Box>
+                </Stack>
 
                 {/* ── Intro ── */}
                 <Typography
@@ -114,12 +131,13 @@ function DocsPage() {
                 </Typography>
 
                 {/* ── Section nav ── */}
-                <Stack
-                    direction="row"
-                    spacing={0.5}
+                <Box
                     sx={{
                         mt: 3,
                         mb: 1,
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        gap: 0.5,
                         borderBottom: '1px solid',
                         borderColor: 'divider',
                         pb: 0,
@@ -143,6 +161,7 @@ function DocsPage() {
                                 py: 1,
                                 fontSize: 13,
                                 fontWeight: 500,
+                                whiteSpace: 'nowrap',
                                 color: 'text.secondary',
                                 textDecoration: 'none',
                                 background: 'none',
@@ -160,7 +179,7 @@ function DocsPage() {
                             {label}
                         </Box>
                     ))}
-                </Stack>
+                </Box>
 
                 {/* ── Full example ── */}
                 <Box id="examples" sx={{ scrollMarginTop: 24 }} />

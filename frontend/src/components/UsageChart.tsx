@@ -1,9 +1,9 @@
 import {
     Box,
-    ButtonGroup,
     Button,
     CircularProgress,
     Paper,
+    Stack,
     Typography,
 } from '@mui/material';
 import {
@@ -57,14 +57,17 @@ function UsageChart({
     }));
 
     return (
-        <Paper variant="outlined" sx={{ p: 3, borderRadius: 1 }}>
+        <Paper
+            variant="outlined"
+            sx={{ p: { xs: 2, sm: 3 }, borderRadius: 1 }}
+        >
             <Box
                 sx={{
                     display: 'flex',
                     justifyContent: 'space-between',
-                    alignItems: 'flex-start',
+                    alignItems: { xs: 'stretch', sm: 'flex-start' },
+                    flexDirection: { xs: 'column', sm: 'row' },
                     mb: 3,
-                    flexWrap: 'wrap',
                     gap: 1,
                 }}
             >
@@ -81,18 +84,28 @@ function UsageChart({
                     </Typography>
                 </Box>
 
-                <ButtonGroup size="small" variant="outlined">
+                <Stack
+                    direction="row"
+                    spacing={1}
+                    useFlexGap
+                    sx={{ flexWrap: 'wrap' }}
+                >
                     {RANGES.map(({ label, value }) => (
                         <Button
                             key={value}
                             onClick={() => onRangeChange(value)}
                             variant={range === value ? 'contained' : 'outlined'}
-                            sx={{ textTransform: 'none', minWidth: 44 }}
+                            size="small"
+                            sx={{
+                                textTransform: 'none',
+                                minWidth: 44,
+                                flex: { xs: '1 1 0', sm: '0 0 auto' },
+                            }}
                         >
                             {label}
                         </Button>
                     ))}
-                </ButtonGroup>
+                </Stack>
             </Box>
 
             {loading && (
@@ -142,7 +155,7 @@ function UsageChart({
                 <ResponsiveContainer width="100%" height={240}>
                     <AreaChart
                         data={chartData}
-                        margin={{ top: 4, right: 4, left: -16, bottom: 0 }}
+                        margin={{ top: 4, right: 4, left: 0, bottom: 0 }}
                     >
                         <defs>
                             <linearGradient

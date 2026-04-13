@@ -1,5 +1,16 @@
-import { useEffect } from 'react';
-import { Box, Button, Chip, Stack, Typography } from '@mui/material';
+import { useEffect, useMemo, useState } from 'react';
+import type { MouseEvent } from 'react';
+import {
+    Box,
+    Button,
+    Chip,
+    Divider,
+    Menu,
+    MenuItem,
+    Stack,
+    Typography,
+} from '@mui/material';
+import { Menu as MenuIcon } from '@mui/icons-material';
 import BrandLogo from '../components/BrandLogo';
 import useAuth from '../hooks/useAuth';
 import { useApiKeys } from '../hooks/useApiKeys';
@@ -19,6 +30,12 @@ import { logout } from '../services/authService';
 
 const DASHBOARD_TABS = ['api-keys', 'playground', 'metrics', 'admin'] as const;
 type DashboardTab = (typeof DASHBOARD_TABS)[number];
+const DASHBOARD_TAB_LABELS: Record<DashboardTab, string> = {
+    'api-keys': 'API Keys',
+    playground: 'Playground',
+    metrics: 'Metrics',
+    admin: 'Admin',
+};
 
 function normalizeTabParam(
     routeTabSlug: string | undefined,
@@ -33,6 +50,8 @@ function normalizeTabParam(
 function DashboardPage() {
     const routeParams = useParams<{ tab: string }>();
     const navigate = useNavigate();
+    const [mobileMenuAnchorEl, setMobileMenuAnchorEl] =
+        useState<null | HTMLElement>(null);
 
     const { user, setUser } = useAuth();
     const isAdmin = user?.role === 'admin';
@@ -101,6 +120,27 @@ function DashboardPage() {
         }
     }, [routeParams.tab, navigate, isAdmin]);
 
+    const visibleTabs = useMemo(
+        () =>
+            DASHBOARD_TABS.filter(
+                (tab): tab is DashboardTab => isAdmin || tab !== 'admin'
+            ),
+        [isAdmin]
+    );
+
+    const handleOpenMobileMenu = (event: MouseEvent<HTMLElement>) => {
+        setMobileMenuAnchorEl(event.currentTarget);
+    };
+
+    const handleCloseMobileMenu = () => {
+        setMobileMenuAnchorEl(null);
+    };
+
+    const handleNavigateToTab = (tab: DashboardTab) => {
+        navigate(`/dashboard/${tab}`);
+        handleCloseMobileMenu();
+    };
+
     const tabButtonSx = (tab: DashboardTab) => ({
         textTransform: 'none',
         color: activeTab === tab ? 'primary.main' : 'text.primary',
@@ -115,93 +155,197 @@ function DashboardPage() {
         <Box sx={{ width: '100%', minHeight: '100%' }}>
             <Box
                 sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
                     py: 1.5,
                     px: { xs: 2, sm: 3 },
                 }}
             >
-                <Stack direction="row" gap={1} alignItems="center">
-                    <BrandLogo asLink={false} />
-                    <Box sx={{ mr: 1 }} />
+                <Stack spacing={1.5} sx={{ display: { xs: 'flex', sm: 'none' } }}>
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        spacing={1}
+                    >
+                        <BrandLogo asLink={false} />
+                        <Button
+                            variant="outlined"
+                            size="small"
+                            onClick={handleOpenMobileMenu}
+                            startIcon={<MenuIcon fontSize="small" />}
+                            sx={{ textTransform: 'none', flexShrink: 0 }}
+                        >
+                            {DASHBOARD_TAB_LABELS[activeTab]}
+                        </Button>
+                    </Stack>
 
-                    <Button
-                        component={RouterLink}
-                        to="/docs"
-                        variant="text"
-                        color="inherit"
-                        size="small"
-                        sx={{ textTransform: 'none' }}
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        spacing={1}
                     >
-                        Docs
-                    </Button>
-                    <Button
-                        component={RouterLink}
-                        to="/dashboard/api-keys"
-                        variant="text"
-                        size="small"
-                        sx={tabButtonSx('api-keys')}
-                    >
-                        API Keys
-                    </Button>
-                    <Button
-                        component={RouterLink}
-                        to="/dashboard/playground"
-                        variant="text"
-                        size="small"
-                        sx={tabButtonSx('playground')}
-                    >
-                        Playground
-                    </Button>
-                    <Button
-                        component={RouterLink}
-                        to="/dashboard/metrics"
-                        variant="text"
-                        size="small"
-                        sx={tabButtonSx('metrics')}
-                    >
-                        Metrics
-                    </Button>
-                    {isAdmin && (
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ minWidth: 0 }}
+                        >
+                            {user?.name || 'User'}
+                        </Typography>
+                        <Button
+                            variant="outlined"
+                            size="small"
+                            onClick={handleSignOut}
+                            sx={{ textTransform: 'none', flexShrink: 0 }}
+                        >
+                            Sign out
+                        </Button>
+                    </Stack>
+                </Stack>
+
+                <Box
+                    sx={{
+                        display: { xs: 'none', sm: 'flex' },
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        width: '100%',
+                    }}
+                >
+                    <Stack direction="row" gap={1} alignItems="center">
+                        <BrandLogo asLink={false} />
+                        <Box sx={{ mr: 1 }} />
+
                         <Button
                             component={RouterLink}
-                            to="/dashboard/admin"
+                            to="/docs"
+                            variant="text"
+                            color="inherit"
+                            size="small"
+                            sx={{ textTransform: 'none' }}
+                        >
+                            Docs
+                        </Button>
+                        <Button
+                            component={RouterLink}
+                            to="/dashboard/api-keys"
                             variant="text"
                             size="small"
-                            sx={tabButtonSx('admin')}
+                            sx={tabButtonSx('api-keys')}
                         >
-                            Admin
-                            <Chip
-                                label="Admin"
-                                size="small"
-                                color="warning"
-                                sx={{
-                                    ml: 0.75,
-                                    height: 16,
-                                    fontSize: 10,
-                                    fontWeight: 700,
-                                    '& .MuiChip-label': { px: 0.75 },
-                                }}
-                            />
+                            API Keys
                         </Button>
-                    )}
-                </Stack>
+                        <Button
+                            component={RouterLink}
+                            to="/dashboard/playground"
+                            variant="text"
+                            size="small"
+                            sx={tabButtonSx('playground')}
+                        >
+                            Playground
+                        </Button>
+                        <Button
+                            component={RouterLink}
+                            to="/dashboard/metrics"
+                            variant="text"
+                            size="small"
+                            sx={tabButtonSx('metrics')}
+                        >
+                            Metrics
+                        </Button>
+                        {isAdmin && (
+                            <Button
+                                component={RouterLink}
+                                to="/dashboard/admin"
+                                variant="text"
+                                size="small"
+                                sx={tabButtonSx('admin')}
+                            >
+                                Admin
+                                <Chip
+                                    label="Admin"
+                                    size="small"
+                                    color="warning"
+                                    sx={{
+                                        ml: 0.75,
+                                        height: 16,
+                                        fontSize: 10,
+                                        fontWeight: 700,
+                                        '& .MuiChip-label': { px: 0.75 },
+                                    }}
+                                />
+                            </Button>
+                        )}
+                    </Stack>
 
-                <Stack direction="row" spacing={1.5} alignItems="center">
-                    <Typography variant="body2" color="text.secondary">
-                        {user?.name || 'User'}
-                    </Typography>
-                    <Button
-                        variant="outlined"
-                        size="small"
-                        onClick={handleSignOut}
-                        sx={{ textTransform: 'none' }}
-                    >
-                        Sign out
-                    </Button>
-                </Stack>
+                    <Stack direction="row" spacing={1.5} alignItems="center">
+                        <Typography variant="body2" color="text.secondary">
+                            {user?.name || 'User'}
+                        </Typography>
+                        <Button
+                            variant="outlined"
+                            size="small"
+                            onClick={handleSignOut}
+                            sx={{ textTransform: 'none' }}
+                        >
+                            Sign out
+                        </Button>
+                    </Stack>
+                </Box>
             </Box>
+
+            <Menu
+                open={Boolean(mobileMenuAnchorEl)}
+                onClose={handleCloseMobileMenu}
+                anchorEl={mobileMenuAnchorEl}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+            >
+                <MenuItem
+                    component={RouterLink}
+                    to="/docs"
+                    onClick={handleCloseMobileMenu}
+                >
+                    Docs
+                </MenuItem>
+                <Divider />
+                {visibleTabs.map((tab) => (
+                    <MenuItem
+                        key={tab}
+                        selected={activeTab === tab}
+                        onClick={() => handleNavigateToTab(tab)}
+                        sx={{ minWidth: 200 }}
+                    >
+                        <Stack
+                            direction="row"
+                            spacing={1}
+                            alignItems="center"
+                            justifyContent="space-between"
+                            sx={{ width: '100%' }}
+                        >
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    fontWeight: activeTab === tab ? 700 : 400,
+                                }}
+                            >
+                                {DASHBOARD_TAB_LABELS[tab]}
+                            </Typography>
+                            {tab === 'admin' && (
+                                <Chip
+                                    label="Admin"
+                                    size="small"
+                                    color="warning"
+                                    sx={{
+                                        height: 18,
+                                        fontSize: 10,
+                                        fontWeight: 700,
+                                        '& .MuiChip-label': { px: 0.75 },
+                                    }}
+                                />
+                            )}
+                        </Stack>
+                    </MenuItem>
+                ))}
+            </Menu>
 
             {activeTab === 'api-keys' && (
                 <>

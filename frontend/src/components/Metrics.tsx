@@ -3,6 +3,7 @@ import {
     CircularProgress,
     Grid,
     Paper,
+    Stack,
     Table,
     TableBody,
     TableCell,
@@ -123,7 +124,11 @@ function Metrics({
             <TableContainer
                 component={Paper}
                 variant="outlined"
-                sx={{ borderRadius: 1, overflow: 'hidden' }}
+                sx={{
+                    borderRadius: 1,
+                    overflow: 'hidden',
+                    display: { xs: 'none', sm: 'block' },
+                }}
             >
                 <Table size="small">
                     <TableHead>
@@ -199,6 +204,105 @@ function Metrics({
                     </TableBody>
                 </Table>
             </TableContainer>
+
+            <Stack spacing={1.5} sx={{ display: { xs: 'flex', sm: 'none' } }}>
+                {metrics.usagePerApiKey.map((row) => {
+                    const keyErrorRate =
+                        row.totalRequests > 0
+                            ? Math.round((row.errorRequests / row.totalRequests) * 10000) /
+                              100
+                            : 0;
+
+                    return (
+                        <Paper
+                            key={row.apiKeyId}
+                            variant="outlined"
+                            sx={{ p: 2, borderRadius: 1 }}
+                        >
+                            <Stack spacing={1}>
+                                <Typography
+                                    variant="subtitle2"
+                                    sx={{ fontWeight: 600, color: 'text.primary' }}
+                                >
+                                    {row.apiKeyName}
+                                </Typography>
+
+                                <Stack
+                                    direction="row"
+                                    justifyContent="space-between"
+                                    spacing={2}
+                                >
+                                    <Typography variant="body2" color="text.secondary">
+                                        Total Requests
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        {row.totalRequests.toLocaleString()}
+                                    </Typography>
+                                </Stack>
+
+                                <Stack
+                                    direction="row"
+                                    justifyContent="space-between"
+                                    spacing={2}
+                                >
+                                    <Typography variant="body2" color="text.secondary">
+                                        Daily Limit
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        {metrics.dailyLimit.toLocaleString()}
+                                    </Typography>
+                                </Stack>
+
+                                <Stack
+                                    direction="row"
+                                    justifyContent="space-between"
+                                    spacing={2}
+                                >
+                                    <Typography variant="body2" color="text.secondary">
+                                        Errors
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        {row.errorRequests.toLocaleString()}
+                                    </Typography>
+                                </Stack>
+
+                                <Stack
+                                    direction="row"
+                                    justifyContent="space-between"
+                                    spacing={2}
+                                >
+                                    <Typography variant="body2" color="text.secondary">
+                                        Error Rate
+                                    </Typography>
+                                    <Typography
+                                        variant="body2"
+                                        sx={{
+                                            color:
+                                                keyErrorRate > 10
+                                                    ? 'error.main'
+                                                    : keyErrorRate > 5
+                                                      ? 'warning.main'
+                                                      : 'success.main',
+                                            fontWeight: 600,
+                                        }}
+                                    >
+                                        {keyErrorRate}%
+                                    </Typography>
+                                </Stack>
+                            </Stack>
+                        </Paper>
+                    );
+                })}
+
+                {metrics.usagePerApiKey.length === 0 && (
+                    <Paper variant="outlined" sx={{ p: 3, textAlign: 'center' }}>
+                        <Typography variant="body2" color="text.secondary">
+                            No requests recorded yet. Use your API keys to start
+                            tracking usage.
+                        </Typography>
+                    </Paper>
+                )}
+            </Stack>
         </Box>
     );
 }

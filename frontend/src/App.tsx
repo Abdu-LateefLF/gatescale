@@ -9,7 +9,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
     return (
-        <Box sx={{ width: '100%', minHeight: '100vh', overflowX: 'hidden' }}>
+        <Box sx={{ width: '100%', minHeight: '100vh' }}>
             <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/docs" element={<DocsPage />} />
