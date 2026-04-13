@@ -35,6 +35,7 @@ if (clientUrl) {
             ],
         })
     );
+    app.options('/{*path}', cors());
 }
 
 app.use(cookieParser());
