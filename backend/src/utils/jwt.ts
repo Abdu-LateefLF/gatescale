@@ -33,6 +33,7 @@ export function verifyToken(token: string): object {
         }
         return decoded;
     } catch (err) {
+        console.error(err);
         throw new AuthenticationError('Invalid token');
     }
 }
