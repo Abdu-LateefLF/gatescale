@@ -1,15 +1,14 @@
-import { Request, Response } from 'express';
+import { CookieOptions, Request, Response } from 'express';
 import { LoginRequest, RegisterRequest } from '../schemas/auth.schema.js';
 import authService from '../services/auth.service.js';
 import { BadRequestError } from '../utils/error.js';
 
-const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || undefined;
+const isProduction = process.env.NODE_ENV === 'production';
 
-const baseCookieOptions = {
+const baseCookieOptions: CookieOptions = {
     httpOnly: true,
     secure: true,
-    sameSite: 'none' as const,
-    ...(COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
+    sameSite: isProduction ? 'strict' : 'none',
 };
 
 class AuthController {
@@ -49,11 +48,9 @@ class AuthController {
         } catch (error) {
             res.clearCookie('accessToken', {
                 path: '/',
-                ...(COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
             });
             res.clearCookie('refreshToken', {
-                path: '/auth/refresh-toke',
-                ...(COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
+                path: '/auth/refresh-token',
             });
             throw error;
         }
@@ -68,11 +65,9 @@ class AuthController {
     async logout(req: Request, res: Response) {
         res.clearCookie('accessToken', {
             path: '/',
-            ...(COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
         });
         res.clearCookie('refreshToken', {
-            path: '/',
-            ...(COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
+            path: '/auth/refresh-token',
         });
         res.json({ message: 'Logout successful' });
     }
