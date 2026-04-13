@@ -8,7 +8,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 const baseCookieOptions: CookieOptions = {
     httpOnly: true,
     secure: true,
-    sameSite: isProduction ? 'strict' : 'none',
+    sameSite: isProduction ? 'lax' : 'none',
 };
 
 class AuthController {

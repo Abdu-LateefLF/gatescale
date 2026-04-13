@@ -25,7 +25,6 @@ export const FULL_RESPONSE = `{
 const apiUrl = BASE_API_URL.replace('https://', '')
     .replace('http://', '')
     .replace('www.', '')
-    .replace('/api', '')
     .replace('//', '/');
 
 export const REQUEST_EXAMPLE = `POST /api/run HTTP/1.1
