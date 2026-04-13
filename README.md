@@ -48,8 +48,6 @@ flowchart LR
     A2 --> P
 ```
 
-
-
 ---
 
 ## FinQL
@@ -86,7 +84,6 @@ OUTPUT surplus, savingsRate, health, stability, growth
 
 ### Commands
 
-
 | Command     | Syntax                                            | Description                                                       |
 | ----------- | ------------------------------------------------- | ----------------------------------------------------------------- |
 | `SET`       | `SET name = literal`                              | Assign a number, boolean, or quoted string                        |
@@ -96,7 +93,6 @@ OUTPUT surplus, savingsRate, health, stability, growth
 | `SCORE`     | `SCORE name USING a, b`                           | Score 0–100: `(a / b) × 100`, clamped                             |
 | `ASSERT`    | `ASSERT expr op expr`                             | Halt with error if condition is false                             |
 | `OUTPUT`    | `OUTPUT a, b, …`                                  | Return variables and end execution (must be last, exactly once)   |
-
 
 ### Expressions
 
@@ -145,14 +141,12 @@ Start all services with hot reload:
 docker compose -f docker-compose.dev.yml up --build
 ```
 
-
 | Service    | URL                                            |
 | ---------- | ---------------------------------------------- |
 | API        | [http://localhost:9000](http://localhost:9000) |
 | Frontend   | [http://localhost:5173](http://localhost:5173) |
 | PostgreSQL | localhost:6000                                 |
 | Redis      | localhost:6379                                 |
-
 
 ### Production-Style Local Stack
 
@@ -167,14 +161,12 @@ This mode mirrors a more production-like setup:
 - PostgreSQL and Redis are self-hosted inside the Compose stack
 - You keep full control over the infrastructure and networking
 
-
 | Service       | URL / Access                                   |
 | ------------- | ---------------------------------------------- |
 | App via Nginx | [http://localhost](http://localhost)           |
 | API via Nginx | [http://localhost/api/](http://localhost/api/) |
 | PostgreSQL    | localhost:6000                                 |
 | Redis         | internal Compose only                          |
-
 
 ### Stop Services
 
@@ -227,13 +219,11 @@ cd backend && npm run db:seed
 
 Default credentials:
 
-
 | Variable         | Default           |
 | ---------------- | ----------------- |
 | `ADMIN_EMAIL`    | `admin@finql.dev` |
 | `ADMIN_PASSWORD` | `Admin@123!`      |
 | `ADMIN_NAME`     | `Admin`           |
-
 
 > **Change the default password** before deploying to any shared environment.
 
@@ -251,7 +241,6 @@ cp .env.example .env
 
 ### Root `.env` (shared by both compose files)
 
-
 | Variable              | Description                        | Example                                                |
 | --------------------- | ---------------------------------- | ------------------------------------------------------ |
 | `NODE_ENV`            | Runtime environment                | `production`                                           |
@@ -268,16 +257,13 @@ cp .env.example .env
 | `ADMIN_PASSWORD`      | Seed: admin user password          | `Admin@123!`                                           |
 | `ADMIN_NAME`          | Seed: admin user display name      | `Admin`                                                |
 
-
 ---
 
 ## User Roles
-
 
 | Role    | Dashboard Access                              |
 | ------- | --------------------------------------------- |
 | `user`  | API Keys, Playground, Metrics (own keys only) |
 | `admin` | All user features plus platform-wide metrics  |
-
 
 Admin users are created by the seed script or by setting `role = 'admin'` in the database.

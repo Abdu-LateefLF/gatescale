@@ -22,7 +22,7 @@ class AuthController {
         });
         res.cookie('refreshToken', result.refreshToken, {
             ...baseCookieOptions,
-            path: '/auth/refresh-token',
+            path: '/',
         });
 
         res.json({ message: 'Login successful' });
@@ -50,7 +50,7 @@ class AuthController {
                 path: '/',
             });
             res.clearCookie('refreshToken', {
-                path: '/auth/refresh-token',
+                path: '/',
             });
             throw error;
         }
@@ -67,7 +67,7 @@ class AuthController {
             path: '/',
         });
         res.clearCookie('refreshToken', {
-            path: '/auth/refresh-token',
+            path: '/',
         });
         res.json({ message: 'Logout successful' });
     }

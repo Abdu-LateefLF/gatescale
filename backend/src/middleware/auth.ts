@@ -14,6 +14,7 @@ export type UserPayload = {
 
 export function authenticate(role?: UserRole) {
     return (req: Request, res: Response, next: NextFunction) => {
+        console.log('Cookies:', req.cookies);
         const token = req.cookies.accessToken;
         if (!token) {
             return res.status(401).json({ error: 'Unauthorized' });
