@@ -3,8 +3,6 @@ import { LoginRequest, RegisterRequest } from '../schemas/auth.schema.js';
 import authService from '../services/auth.service.js';
 import { BadRequestError } from '../utils/error.js';
 
-const isProduction = process.env.NODE_ENV === 'production';
-
 class AuthController {
     async login(req: Request, res: Response) {
         const { email, password } = req.body as LoginRequest;
@@ -13,13 +11,13 @@ class AuthController {
         res.cookie('accessToken', result.accessToken, {
             httpOnly: true,
             secure: true,
-            sameSite: isProduction ? 'lax' : 'none',
+            sameSite: 'none',
             path: '/',
         });
         res.cookie('refreshToken', result.refreshToken, {
             httpOnly: true,
             secure: true,
-            sameSite: isProduction ? 'lax' : 'none',
+            sameSite: 'none',
             path: '/auth/refresh-token',
         });
 
