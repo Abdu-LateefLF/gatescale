@@ -26,7 +26,6 @@ import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 import QueryPlayground from '../components/QueryPlayground';
 import Metrics from '../components/Metrics';
 import AdminMetrics from '../components/AdminMetrics';
-import { logout } from '../services/authService';
 
 const DASHBOARD_TABS = ['api-keys', 'playground', 'metrics', 'admin'] as const;
 type DashboardTab = (typeof DASHBOARD_TABS)[number];
@@ -53,7 +52,7 @@ function DashboardPage() {
     const [mobileMenuAnchorEl, setMobileMenuAnchorEl] =
         useState<null | HTMLElement>(null);
 
-    const { user, setUser } = useAuth();
+    const { user, signOut } = useAuth();
     const isAdmin = user?.role === 'admin';
 
     const activeTab = normalizeTabParam(routeParams.tab, isAdmin);
@@ -100,13 +99,8 @@ function DashboardPage() {
     } = useAdminUsageOverTime(activeTab === 'admin');
 
     const handleSignOut = async () => {
-        try {
-            await logout();
-        } catch {
-            // proceed regardless
-        }
-        setUser(null);
-        navigate('/login');
+        await signOut();
+        navigate('/login', { replace: true });
     };
 
     useEffect(() => {

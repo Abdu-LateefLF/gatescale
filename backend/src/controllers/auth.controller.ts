@@ -3,21 +3,26 @@ import { LoginRequest, RegisterRequest } from '../schemas/auth.schema.js';
 import authService from '../services/auth.service.js';
 import { BadRequestError } from '../utils/error.js';
 
+const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || undefined;
+
+const baseCookieOptions = {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none' as const,
+    ...(COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
+};
+
 class AuthController {
     async login(req: Request, res: Response) {
         const { email, password } = req.body as LoginRequest;
         const result = await authService.login(email, password);
 
         res.cookie('accessToken', result.accessToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'none',
+            ...baseCookieOptions,
             path: '/',
         });
         res.cookie('refreshToken', result.refreshToken, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'none',
+            ...baseCookieOptions,
             path: '/auth/refresh-token',
         });
 
@@ -36,16 +41,20 @@ class AuthController {
                 await authService.refreshToken(refreshToken);
 
             res.cookie('accessToken', accessToken, {
-                httpOnly: true,
-                secure: true,
-                sameSite: 'none',
+                ...baseCookieOptions,
                 path: '/',
             });
 
             res.json({ message: 'Token refresh successful' });
         } catch (error) {
-            res.clearCookie('accessToken');
-            res.clearCookie('refreshToken');
+            res.clearCookie('accessToken', {
+                path: '/',
+                ...(COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
+            });
+            res.clearCookie('refreshToken', {
+                path: '/',
+                ...(COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
+            });
             throw error;
         }
     }
@@ -57,8 +66,14 @@ class AuthController {
     }
 
     async logout(req: Request, res: Response) {
-        res.clearCookie('accessToken');
-        res.clearCookie('refreshToken');
+        res.clearCookie('accessToken', {
+            path: '/',
+            ...(COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
+        });
+        res.clearCookie('refreshToken', {
+            path: '/',
+            ...(COOKIE_DOMAIN ? { domain: COOKIE_DOMAIN } : {}),
+        });
         res.json({ message: 'Logout successful' });
     }
 }

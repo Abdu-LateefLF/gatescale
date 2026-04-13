@@ -1,22 +1,8 @@
-import { createContext, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { User } from '../types';
+import { login, logout } from '../services/authService';
 import { getUserProfile } from '../services/userService';
-
-interface AuthContextType {
-    user: User | null;
-    isLoading: boolean;
-    isFetching: boolean;
-    setUser: React.Dispatch<React.SetStateAction<User | null>>;
-    refetchUser: () => Promise<void>;
-}
-
-export const AuthContext = createContext<AuthContextType>({
-    user: null,
-    isLoading: true,
-    isFetching: false,
-    setUser: () => {},
-    refetchUser: async () => {},
-});
+import { AuthContext } from './AuthContext';
 
 interface AuthProviderProps {
     children: React.ReactNode;
@@ -29,12 +15,40 @@ function AuthProvider({ children }: AuthProviderProps) {
 
     const fetchUserProfile = useCallback(async () => {
         setIsFetching(true);
+
         try {
-            const user = await getUserProfile();
-            setUser(user);
-        } catch (error) {
+            const signedInUser = await getUserProfile();
+            setUser(signedInUser);
+        } catch {
             setUser(null);
         } finally {
+            setIsFetching(false);
+            setIsLoading(false);
+        }
+    }, []);
+
+    const signIn = useCallback(
+        async (email: string, password: string) => {
+            setIsLoading(true);
+
+            try {
+                await login(email, password);
+                await fetchUserProfile();
+            } catch (error) {
+                setIsLoading(false);
+                throw error;
+            }
+        },
+        [fetchUserProfile]
+    );
+
+    const signOut = useCallback(async () => {
+        try {
+            await logout();
+        } catch {
+            // Clear local auth state even if the logout request fails.
+        } finally {
+            setUser(null);
             setIsFetching(false);
             setIsLoading(false);
         }
@@ -50,7 +64,8 @@ function AuthProvider({ children }: AuthProviderProps) {
                 user,
                 isLoading,
                 isFetching,
-                setUser,
+                signIn,
+                signOut,
                 refetchUser: fetchUserProfile,
             }}
         >

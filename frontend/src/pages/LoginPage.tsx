@@ -9,7 +9,6 @@ import {
 import { useForm } from 'react-hook-form';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import useToast from '../hooks/useToast';
-import { login } from '../services/authService';
 import { useState } from 'react';
 import useAuth from '../hooks/useAuth';
 import PublicNavBar from '../components/PublicNavBar';
@@ -32,17 +31,16 @@ function LoginPage() {
         },
     });
 
-    const { refetchUser } = useAuth();
+    const { signIn } = useAuth();
     const showToast = useToast();
     const navigate = useNavigate();
 
     const onSubmit = async (data: LoginFormInputs) => {
         setLoading(true);
         try {
-            await login(data.email, data.password);
-            await refetchUser();
+            await signIn(data.email, data.password);
             showToast('Login successful!', 'success');
-            navigate('/dashboard');
+            navigate('/dashboard/api-keys', { replace: true });
         } catch {
             showToast('Login failed. Please check your credentials.', 'error');
         } finally {
