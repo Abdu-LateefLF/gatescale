@@ -33,6 +33,7 @@ export function authenticate(role?: UserRole) {
             req.user = decoded;
             return next();
         } catch (err) {
+            console.error('Invalid token:', err);
             return res.status(401).json({ error: 'Invalid token' });
         }
     };

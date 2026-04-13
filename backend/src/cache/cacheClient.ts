@@ -20,6 +20,10 @@ class CacheClient {
     async expire(key: string, seconds: number): Promise<void> {
         await redisClient.expire(key, seconds);
     }
+
+    async ttl(key: string): Promise<number> {
+        return await redisClient.ttl(key);
+    }
 }
 
 const cacheClient = new CacheClient();

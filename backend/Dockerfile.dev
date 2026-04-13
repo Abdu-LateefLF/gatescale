@@ -16,5 +16,5 @@ COPY . .
 # Expose backend port
 EXPOSE 9000
 
-# Wait for postgres and run migrations, then start the app in dev mode
-CMD ["sh", "-c", "npm run db:push && npm run db:seed && npm run dev"]
+# Start the app in dev mode
+CMD ["npm", "run", "dev"]

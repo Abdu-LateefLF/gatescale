@@ -2,9 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 import cacheKeys from '../cache/cacheKeys.js';
 import cacheClient from '../cache/cacheClient.js';
 import { SubscriptionTier } from '../db/types.js';
-import { validate as uuidValidate } from 'uuid';
 import apiKeysRepository from '../repository/ApiKeysRepository.js';
 import userRepository from '../repository/UserRepository.js';
+import { calculateResetTimeByDayEnd } from '../utils/ratelimit.js';
 
 export function userRateLimiter(maxRequests: number, windowSeconds: number) {
     return async (req: Request, res: Response, next: NextFunction) => {
@@ -19,6 +19,16 @@ export function userRateLimiter(maxRequests: number, windowSeconds: number) {
             if (current === 1) {
                 await cacheClient.expire(key, windowSeconds);
             }
+
+            const ttl = await cacheClient.ttl(key);
+            const resetTime = Math.floor(Date.now() / 1000) + ttl;
+
+            res.setHeader('X-RateLimit-Limit', maxRequests.toString());
+            res.setHeader(
+                'X-RateLimit-Remaining',
+                Math.max(0, maxRequests - current).toString()
+            );
+            res.setHeader('X-RateLimit-Reset', resetTime.toString());
 
             if (current && current > maxRequests) {
                 return res.status(429).json({ error: 'Too many requests' });
@@ -67,6 +77,16 @@ export async function apiKeyRateLimiter(
         if (current === 1) {
             await cacheClient.expire(key, windowSeconds);
         }
+
+        const ttl = await cacheClient.ttl(key);
+        const resetTime = calculateResetTimeByDayEnd(ttl);
+
+        res.setHeader('X-RateLimit-Limit', maxRequests.toString());
+        res.setHeader(
+            'X-RateLimit-Remaining',
+            Math.max(0, maxRequests - current).toString()
+        );
+        res.setHeader('X-RateLimit-Reset', resetTime.toString());
 
         if (current && current > maxRequests) {
             return res.status(429).json({ error: 'Too many requests' });

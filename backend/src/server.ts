@@ -28,6 +28,11 @@ if (clientUrl) {
         cors({
             origin: clientUrl,
             credentials: true,
+            exposedHeaders: [
+                'X-RateLimit-Limit',
+                'X-RateLimit-Remaining',
+                'X-RateLimit-Reset',
+            ],
         })
     );
 }
