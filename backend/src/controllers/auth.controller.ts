@@ -1,7 +1,7 @@
 import { CookieOptions, Request, Response } from 'express';
-import { LoginRequest, RegisterRequest } from '../schemas/auth.schema.js';
-import authService from '../services/auth.service.js';
-import { BadRequestError } from '../utils/error.js';
+import { LoginRequest, RegisterRequest } from '../schemas/auth.schema';
+import authService from '../services/auth.service';
+import { BadRequestError } from '../utils/error';
 
 const cookieOptions: CookieOptions = {
     httpOnly: true,

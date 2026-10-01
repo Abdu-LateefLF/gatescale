@@ -1,8 +1,8 @@
-import { apiKeysTable } from '../db/schemas/apiKeys.js';
-import { ApiKey, CreateApiKeyParams } from '../db/types.js';
-import db from '../index.js';
+import { apiKeysTable } from '../db/schemas/apiKeys';
+import { ApiKey, CreateApiKeyParams } from '../db/types';
+import db from '../index';
 import { and, eq } from 'drizzle-orm';
-import { InternalServerError } from '../utils/error.js';
+import { InternalServerError } from '../utils/error';
 
 class ApiKeysRepository {
     async findAllByUserId(userId: string): Promise<ApiKey[]> {

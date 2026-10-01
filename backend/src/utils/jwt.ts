@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { AuthenticationError, InternalServerError } from './error.js';
+import { AuthenticationError, InternalServerError } from './error';
 
 const SECRET_KEY = process.env.JWT_SECRET;
 const ALGORITHM = 'HS256';

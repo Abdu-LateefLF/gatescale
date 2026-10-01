@@ -1,8 +1,8 @@
 import { eq } from 'drizzle-orm';
-import { usersTable } from '../db/schemas/users.js';
-import db from '../index.js';
-import { User } from '../db/types.js';
-import { InternalServerError } from '../utils/error.js';
+import { usersTable } from '../db/schemas/users';
+import db from '../index';
+import { User } from '../db/types';
+import { InternalServerError } from '../utils/error';
 
 type CreateUserInput = Omit<User, 'id' | 'createdAt'>;
 

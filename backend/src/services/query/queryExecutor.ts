@@ -1,7 +1,7 @@
-import QueryContext from './queryContext.js';
-import queryLexer from './queryLexer.js';
-import queryParser from './queryParser.js';
-import { CommandType } from './types.js';
+import QueryContext from './queryContext';
+import queryLexer from './queryLexer';
+import queryParser from './queryParser';
+import { CommandType } from './types';
 
 export interface QueryExecutionResult {
     results: Record<string, unknown>;

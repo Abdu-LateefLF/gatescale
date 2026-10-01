@@ -1,13 +1,13 @@
-import type Command from './commands/command.js';
-import SetCommand from './commands/set.js';
-import CalculateCommand from './commands/calculate.js';
-import AnalyzeCommand from './commands/analyze.js';
-import ForecastCommand from './commands/forecast.js';
-import ScoreCommand from './commands/score.js';
-import AssertCommand from './commands/assert.js';
-import OutputCommand from './commands/output.js';
-import { QueryParseError } from './error.js';
-import { CommandType, LexedLine, QueryParserResult } from './types.js';
+import type Command from './commands/command';
+import SetCommand from './commands/set';
+import CalculateCommand from './commands/calculate';
+import AnalyzeCommand from './commands/analyze';
+import ForecastCommand from './commands/forecast';
+import ScoreCommand from './commands/score';
+import AssertCommand from './commands/assert';
+import OutputCommand from './commands/output';
+import { QueryParseError } from './error';
+import { CommandType, LexedLine, QueryParserResult } from './types';
 
 class QueryParser {
     async parseQuery(lines: LexedLine[]): Promise<QueryParserResult> {

@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import cacheKeys from '../cache/cacheKeys.js';
-import cacheClient from '../cache/cacheClient.js';
-import { SubscriptionTier } from '../db/types.js';
-import apiKeysRepository from '../repository/ApiKeysRepository.js';
-import userRepository from '../repository/UserRepository.js';
-import { calculateResetTimeByDayEnd } from '../utils/ratelimit.js';
+import cacheKeys from '../cache/cacheKeys';
+import cacheClient from '../cache/cacheClient';
+import { SubscriptionTier } from '../db/types';
+import apiKeysRepository from '../repository/ApiKeysRepository';
+import userRepository from '../repository/UserRepository';
+import { calculateResetTimeByDayEnd } from '../utils/ratelimit';
 
 export function userRateLimiter(maxRequests: number, windowSeconds: number) {
     return async (req: Request, res: Response, next: NextFunction) => {

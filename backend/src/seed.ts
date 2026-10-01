@@ -1,7 +1,7 @@
 import 'dotenv/config';
-import db from './index.js';
-import { usersTable } from './db/schemas/users.js';
-import { hashPassword } from './utils/password.js';
+import db from './index';
+import { usersTable } from './db/schemas/users';
+import { hashPassword } from './utils/password';
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? 'admin@finql.dev';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? 'Admin@123!';

@@ -1,4 +1,4 @@
-import AppError from '../../utils/error.js';
+import AppError from '../../utils/error';
 
 export class QueryError extends AppError {
     constructor(message: string) {

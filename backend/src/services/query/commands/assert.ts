@@ -1,8 +1,8 @@
-import Command from './command.js';
-import { CommandType } from '../types.js';
-import QueryContext from '../queryContext.js';
-import { QueryExecutionError, QueryParseError } from '../error.js';
-import { ExpressionParser, evaluateExpression } from '../expression.js';
+import Command from './command';
+import { CommandType } from '../types';
+import QueryContext from '../queryContext';
+import { QueryExecutionError, QueryParseError } from '../error';
+import { ExpressionParser, evaluateExpression } from '../expression';
 
 type CompareOp = '>' | '<' | '>=' | '<=' | '==' | '!=';
 

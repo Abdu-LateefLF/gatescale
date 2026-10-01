@@ -1,4 +1,4 @@
-import QueryExecutor, { QueryExecutionResult } from './queryExecutor.js';
+import QueryExecutor, { QueryExecutionResult } from './queryExecutor';
 
 class QueryService {
     async executeQuery(query: string): Promise<QueryExecutionResult> {

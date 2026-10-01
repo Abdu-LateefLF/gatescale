@@ -1,8 +1,8 @@
-import { apiRequestLogsTable } from '../db/schemas/apiRequestLogs.js';
-import { apiKeysTable } from '../db/schemas/apiKeys.js';
-import { usersTable } from '../db/schemas/users.js';
-import { CreateApiRequestLogParams } from '../db/types.js';
-import db from '../index.js';
+import { apiRequestLogsTable } from '../db/schemas/apiRequestLogs';
+import { apiKeysTable } from '../db/schemas/apiKeys';
+import { usersTable } from '../db/schemas/users';
+import { CreateApiRequestLogParams } from '../db/types';
+import db from '../index';
 import { and, count, eq, gte, sql } from 'drizzle-orm';
 
 export type TimeRange = '24h' | '7d' | '30d';

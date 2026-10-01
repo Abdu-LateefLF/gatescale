@@ -1,14 +1,14 @@
 import { Router } from 'express';
-import queryController from '../controllers/query.controller.js';
-import validateBody from '../middleware/validateBody.js';
-import { runQueryRequestSchema } from '../schemas/query.schema.js';
+import queryController from '../controllers/query.controller';
+import validateBody from '../middleware/validateBody';
+import { runQueryRequestSchema } from '../schemas/query.schema';
 import {
     authenticate,
     validateApiKey,
     validateApiKeyForPlayground,
-} from '../middleware/auth.js';
-import { apiKeyRateLimiter } from '../middleware/rateLimiter.js';
-import { trackApiRequest } from '../middleware/trackApiRequest.js';
+} from '../middleware/auth';
+import { apiKeyRateLimiter } from '../middleware/rateLimiter';
+import { trackApiRequest } from '../middleware/trackApiRequest';
 
 const router = Router();
 

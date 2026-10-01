@@ -1,5 +1,5 @@
-import { QueryExecutionError } from './error.js';
-import { Variable } from './types.js';
+import { QueryExecutionError } from './error';
+import { Variable } from './types';
 
 class QueryContext {
     variables: Record<string, Variable> = {};

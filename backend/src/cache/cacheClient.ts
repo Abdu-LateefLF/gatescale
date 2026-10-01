@@ -1,4 +1,4 @@
-import redisClient from './redis.js';
+import redisClient from './redis';
 
 class CacheClient {
     async get(key: string): Promise<string | null> {

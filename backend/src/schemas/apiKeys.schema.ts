@@ -1,4 +1,4 @@
-import { ApiKey } from '../db/types.js';
+import { ApiKey } from '../db/types';
 import z from 'zod';
 
 export const createApiKeyRequestSchema = z.object({

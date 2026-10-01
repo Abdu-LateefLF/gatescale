@@ -1,4 +1,4 @@
-import Command from './commands/command.js';
+import Command from './commands/command';
 
 export interface LexedLine {
     text: string;

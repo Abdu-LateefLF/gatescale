@@ -1,7 +1,7 @@
-import Command from './command.js';
-import { CommandType, VariableType } from '../types.js';
-import QueryContext from '../queryContext.js';
-import { QueryExecutionError, QueryParseError } from '../error.js';
+import Command from './command';
+import { CommandType, VariableType } from '../types';
+import QueryContext from '../queryContext';
+import { QueryExecutionError, QueryParseError } from '../error';
 
 /**
  * SCORE <identifier> USING <identifier_list>
