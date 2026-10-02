@@ -91,6 +91,13 @@ class ForecastCommand extends Command {
         const result =
             Math.round(principal * Math.pow(1 + rate, this.years) * 100) / 100;
 
+        if (!Number.isFinite(result)) {
+            throw new QueryExecutionError(
+                'FORECAST result must be a finite number',
+                this.lineNumber
+            );
+        }
+
         context.setVariable(this.targetName, {
             name: this.targetName,
             value: result,

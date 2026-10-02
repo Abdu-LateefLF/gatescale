@@ -53,26 +53,26 @@ export async function apiKeyRateLimiter(
     const keyId = req.apiKeyId;
     const key = cacheKeys.getApiKeyRateLimitKey(keyId);
 
-    let userTier = req.user?.tier as SubscriptionTier | undefined;
-    if (!userTier) {
-        const apiKey = await apiKeysRepository.findById(req.apiKeyId);
-        if (!apiKey) {
-            return res.status(401).json({ error: 'Invalid API key' });
-        }
-
-        const userId = apiKey?.userId;
-        const user = await userRepository.findById(userId);
-        if (!user) {
-            return res.status(401).json({ error: 'Invalid API key' });
-        }
-
-        userTier = user.tier;
-    }
-
-    const maxRequests = userTier === 'free' ? 100 : 1000;
-    const windowSeconds = 24 * 60 * 60; // 24 hours
-
     try {
+        let userTier = req.user?.tier as SubscriptionTier | undefined;
+        if (!userTier) {
+            const apiKey = await apiKeysRepository.findById(req.apiKeyId);
+            if (!apiKey) {
+                return res.status(401).json({ error: 'Invalid API key' });
+            }
+
+            const userId = apiKey?.userId;
+            const user = await userRepository.findById(userId);
+            if (!user) {
+                return res.status(401).json({ error: 'Invalid API key' });
+            }
+
+            userTier = user.tier;
+        }
+
+        const maxRequests = userTier === 'free' ? 100 : 1000;
+        const windowSeconds = 24 * 60 * 60; // 24 hours
+
         const current = await cacheClient.incr(key);
         if (current === 1) {
             await cacheClient.expire(key, windowSeconds);
