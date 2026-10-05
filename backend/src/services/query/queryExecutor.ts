@@ -1,7 +1,7 @@
-import QueryContext from './queryContext';
-import queryLexer from './queryLexer';
-import queryParser from './queryParser';
-import { CommandType } from './types';
+import QueryContext from './queryContext.ts';
+import queryLexer from './queryLexer.ts';
+import queryParser from './queryParser.ts';
+import { CommandType } from './types.ts';
 
 export interface QueryExecutionResult {
     results: Record<string, unknown>;

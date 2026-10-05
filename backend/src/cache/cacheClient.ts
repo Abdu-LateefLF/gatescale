@@ -1,4 +1,4 @@
-import redisClient from './redis';
+import redisClient from './redis.ts';
 
 class CacheClient {
     async get(key: string): Promise<string | null> {

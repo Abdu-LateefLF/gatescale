@@ -1,8 +1,8 @@
-import Command from './command';
-import { CommandType, VariableType } from '../types';
-import QueryContext from '../queryContext';
-import { QueryParseError } from '../error';
-import { isReservedKeyword } from '../reservedKeywords';
+import Command from './command.ts';
+import { CommandType, VariableType } from '../types.ts';
+import QueryContext from '../queryContext.ts';
+import { QueryParseError } from '../error.ts';
+import { isReservedKeyword } from '../reservedKeywords.ts';
 
 const IDENT = /^[a-zA-Z][a-zA-Z0-9_]*$/;
 

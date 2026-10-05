@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { AuthenticationError } from '../utils/error';
-import apiKeysService from '../services/apiKeys.service';
+import { AuthenticationError } from '../utils/error.ts';
+import apiKeysService from '../services/apiKeys.service.ts';
 
 class ApiKeysController {
     async getAllApiKeys(req: Request, res: Response) {

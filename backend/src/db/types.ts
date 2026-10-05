@@ -1,7 +1,7 @@
-import { subscriptionTier, userRole } from './schemas/enums';
-import { usersTable } from './schemas/users';
-import { apiKeysTable } from './schemas/apiKeys';
-import { apiRequestLogsTable } from './schemas/apiRequestLogs';
+import { subscriptionTier, userRole } from './schemas/enums.ts';
+import { usersTable } from './schemas/users.ts';
+import { apiKeysTable } from './schemas/apiKeys.ts';
+import { apiRequestLogsTable } from './schemas/apiRequestLogs.ts';
 
 type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 

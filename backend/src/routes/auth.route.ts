@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import authController from '../controllers/auth.controller';
-import validateBody from '../middleware/validateBody';
-import { registerRequestSchema } from '../schemas/auth.schema';
-import { loginRequestSchema } from '../schemas/auth.schema';
+import authController from '../controllers/auth.controller.ts';
+import validateBody from '../middleware/validateBody.ts';
+import { registerRequestSchema } from '../schemas/auth.schema.ts';
+import { loginRequestSchema } from '../schemas/auth.schema.ts';
 
 const router = Router();
 

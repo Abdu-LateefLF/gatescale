@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import queryService from '../services/query/query.service';
-import { RunQueryRequest } from '../schemas/query.schema';
+import queryService from '../services/query/query.service.ts';
+import { RunQueryRequest } from '../schemas/query.schema.ts';
 
 class QueryController {
     async run(req: Request, res: Response) {

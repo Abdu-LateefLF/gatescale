@@ -1,7 +1,7 @@
-import Command from './command';
-import { CommandType, VariableType } from '../types';
-import QueryContext from '../queryContext';
-import { QueryExecutionError, QueryParseError } from '../error';
+import Command from './command.ts';
+import { CommandType, VariableType } from '../types.ts';
+import QueryContext from '../queryContext.ts';
+import { QueryExecutionError, QueryParseError } from '../error.ts';
 
 /**
  * FORECAST <identifier> USING <identifier_list> FOR <number> YEARS

@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import adminController from '../controllers/admin.controller';
-import { authenticate } from '../middleware/auth';
+import adminController from '../controllers/admin.controller.ts';
+import { authenticate } from '../middleware/auth.ts';
 
 const router = Router();
 

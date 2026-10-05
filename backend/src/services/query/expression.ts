@@ -1,6 +1,6 @@
 import { create, all } from 'mathjs';
-import QueryContext from './queryContext';
-import { QueryExecutionError } from './error';
+import QueryContext from './queryContext.ts';
+import { QueryExecutionError } from './error.ts';
 
 /**
  * Scoped mathjs instance.

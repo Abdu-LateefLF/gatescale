@@ -1,9 +1,9 @@
-import userRepository from '../repository/UserRepository';
-import { BadRequestError } from '../utils/error';
-import { comparePasswords, hashPassword } from '../utils/password';
-import { RegisterRequest } from '../schemas/auth.schema';
-import { generateToken, verifyToken } from '../utils/jwt';
-import { UserPayload } from '../middleware/auth';
+import userRepository from '../repository/UserRepository.ts';
+import { BadRequestError } from '../utils/error.ts';
+import { comparePasswords, hashPassword } from '../utils/password.ts';
+import { RegisterRequest } from '../schemas/auth.schema.ts';
+import { generateToken, verifyToken } from '../utils/jwt.ts';
+import { UserPayload } from '../middleware/auth.ts';
 
 class AuthService {
     async login(email: string, password: string) {

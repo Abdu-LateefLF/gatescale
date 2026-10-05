@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import apiRequestLogsRepository, {
     TimeRange,
-} from '../repository/ApiRequestLogsRepository';
+} from '../repository/ApiRequestLogsRepository.ts';
 
 const VALID_RANGES: TimeRange[] = ['24h', '7d', '30d'];
 

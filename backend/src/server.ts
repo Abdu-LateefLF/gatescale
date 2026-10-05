@@ -1,17 +1,17 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import errorHandler from './middleware/errorHandler';
-import redisClient from './cache/redis';
+import errorHandler from './middleware/errorHandler.ts';
+import redisClient from './cache/redis.ts';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
-import authRoutes from './routes/auth.route';
-import userRoutes from './routes/user.route';
-import apiKeyRoutes from './routes/apiKey.route';
-import queryRoutes from './routes/query.route';
-import metricsRoutes from './routes/metrics.route';
-import adminRoutes from './routes/admin.route';
-import { globalRateLimiter } from './middleware/rateLimiter';
+import authRoutes from './routes/auth.route.ts';
+import userRoutes from './routes/user.route.ts';
+import apiKeyRoutes from './routes/apiKey.route.ts';
+import queryRoutes from './routes/query.route.ts';
+import metricsRoutes from './routes/metrics.route.ts';
+import adminRoutes from './routes/admin.route.ts';
+import { globalRateLimiter } from './middleware/rateLimiter.ts';
 
 const app = express();
 

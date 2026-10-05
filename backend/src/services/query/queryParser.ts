@@ -1,13 +1,13 @@
-import type Command from './commands/command';
-import SetCommand from './commands/set';
-import CalculateCommand from './commands/calculate';
-import AnalyzeCommand from './commands/analyze';
-import ForecastCommand from './commands/forecast';
-import ScoreCommand from './commands/score';
-import AssertCommand from './commands/assert';
-import OutputCommand from './commands/output';
-import { QueryParseError } from './error';
-import { CommandType, LexedLine, QueryParserResult } from './types';
+import type Command from './commands/command.ts';
+import SetCommand from './commands/set.ts';
+import CalculateCommand from './commands/calculate.ts';
+import AnalyzeCommand from './commands/analyze.ts';
+import ForecastCommand from './commands/forecast.ts';
+import ScoreCommand from './commands/score.ts';
+import AssertCommand from './commands/assert.ts';
+import OutputCommand from './commands/output.ts';
+import { QueryParseError } from './error.ts';
+import { CommandType, LexedLine, QueryParserResult } from './types.ts';
 
 class QueryParser {
     async parseQuery(lines: LexedLine[]): Promise<QueryParserResult> {

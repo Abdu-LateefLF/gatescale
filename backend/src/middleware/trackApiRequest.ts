@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import apiRequestLogsRepository from '../repository/ApiRequestLogsRepository';
+import apiRequestLogsRepository from '../repository/ApiRequestLogsRepository.ts';
 
 export function trackApiRequest(
     req: Request,

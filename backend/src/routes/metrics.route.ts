@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import metricsController from '../controllers/metrics.controller';
-import { authenticate } from '../middleware/auth';
+import metricsController from '../controllers/metrics.controller.ts';
+import { authenticate } from '../middleware/auth.ts';
 
 const router = Router();
 

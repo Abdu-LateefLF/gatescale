@@ -1,4 +1,4 @@
-import { LexedLine, QueryLexerResult } from './types';
+import { LexedLine, QueryLexerResult } from './types.ts';
 
 class QueryLexer {
     async lexQuery(query: string): Promise<QueryLexerResult> {

@@ -1,5 +1,5 @@
-import { QueryExecutionError } from './error';
-import { Variable } from './types';
+import { QueryExecutionError } from './error.ts';
+import { Variable } from './types.ts';
 
 class QueryContext {
     variables: Record<string, Variable> = {};

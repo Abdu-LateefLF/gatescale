@@ -1,7 +1,7 @@
-import apiKeysRepository from '../repository/ApiKeysRepository';
-import { CreateApiKeyResult, ProtectedApiKey } from '../schemas/apiKeys.schema';
-import { generateApiKey } from '../utils/apiKey';
-import { BadRequestError } from '../utils/error';
+import apiKeysRepository from '../repository/ApiKeysRepository.ts';
+import { CreateApiKeyResult, ProtectedApiKey } from '../schemas/apiKeys.schema.ts';
+import { generateApiKey } from '../utils/apiKey.ts';
+import { BadRequestError } from '../utils/error.ts';
 
 class ApiKeysService {
     readonly MAX_API_KEYS = 10;
