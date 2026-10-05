@@ -28,7 +28,9 @@
         "@types/pg": "^8.20.0",
         "dotenv": "^17.4.1",
         "drizzle-kit": "^0.31.10",
+        "jest": "^30.5.2",
         "nodemon": "^3.1.14",
+        "ts-jest": "^29.4.14",
         "tsx": "^4.21.0"
     },
     "dependencies": {
