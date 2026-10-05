@@ -8,16 +8,13 @@ Live app: [https://gatescale.onrender.com/](https://gatescale.onrender.com/)
 
 - **Backend**: Node.js + Express + TypeScript, Drizzle ORM, PostgreSQL 15, Redis 7
 - **Frontend**: React + Vite + TypeScript, Material UI, Recharts
-- **Infra**: Docker Compose, Nginx (production reverse proxy)
+- **Infra**: Docker Compose, Nginx (reverse proxy)
 
-## Deployment Modes
+## Deployment
 
-This repo supports two deployment styles:
+**Self-hosted production-style** deployment with Nginx, multiple backend replicas, Redis, and full infra control
 
-- **Local development** with Docker Compose and hot reload
-- **Self-hosted production-style** deployment with Nginx, multiple backend replicas, self-hosted Redis, and full infra control
-
-The public app at [https://gatescale.onrender.com/](https://gatescale.onrender.com/) is deployed differently for cost reasons:
+The public app at [https://gatescale.onrender.com/](https://gatescale.onrender.com/) is deployed differently:
 
 - **Frontend + backend**: Render
 - **Redis**: Upstack
@@ -56,7 +53,7 @@ FinQL is a lightweight, line-based DSL for financial computation. Scripts run se
 
 ### Quick Example
 
-```finql
+```sql
 SET income = 6000
 SET expenses = 4500
 SET rate = 0.05
@@ -147,6 +144,15 @@ docker compose -f docker-compose.dev.yml up --build
 | Frontend   | [http://localhost:5173](http://localhost:5173) |
 | PostgreSQL | localhost:6000                                 |
 | Redis      | localhost:6379                                 |
+
+### Testing
+
+Run backend tests
+
+```bash
+cd backend
+npm run test
+```
 
 ### Production-Style Local Stack
 

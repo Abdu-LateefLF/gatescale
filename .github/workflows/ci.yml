@@ -1,27 +1,25 @@
 name: Build and Run Unit Tests
 
 on:
-  pull_request:
-    branches: [main]
+    pull_request:
+        branches: [main]
 
 jobs:
-  backend-build-test:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./backend
-    steps:
-      - name: Checkout branch
-        uses: actions/checkout@v7
-      - name: Set up Node.js env
-        uses: actions/setup-node@6.5.0
-        with:
-          node-version: 20
-      - name: Install dependencies
-        run: npm ci
-      - name: Build backend
-        run: npm run build
-      - name: Run tests
-        run: npm run test
-        
-        
+    backend-build-test:
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: ./backend
+        steps:
+            - name: Checkout branch
+              uses: actions/checkout@v7
+            - name: Set up Node.js env
+              uses: actions/setup-node@v6.5.0
+              with:
+                  node-version: 20
+            - name: Install dependencies
+              run: npm install
+            - name: Build backend
+              run: npm run build
+            - name: Run tests
+              run: npm run test
