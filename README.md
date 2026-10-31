@@ -73,28 +73,6 @@ OUTPUT surplus, savingsRate, health, stability, growth
 }
 ```
 
-### Commands
-
-| Command     | Syntax                                            | Description                                                       |
-| ----------- | ------------------------------------------------- | ----------------------------------------------------------------- |
-| `SET`       | `SET name = literal`                              | Assign a number, boolean, or quoted string                        |
-| `CALCULATE` | `CALCULATE name = expression`                     | Evaluate a math expression (see below)                            |
-| `ANALYZE`   | `ANALYZE name USING a, b`                         | Rule-based label: **Strong / Stable / At Risk** from savings rate |
-| `FORECAST`  | `FORECAST name USING principal, rate FOR n YEARS` | Compound growth: `principal × (1 + rate)^n`, rounded to 2 dp      |
-| `SCORE`     | `SCORE name USING a, b`                           | Score 0–100: `(a / b) × 100`, clamped                             |
-| `ASSERT`    | `ASSERT expr op expr`                             | Halt with error if condition is false                             |
-| `OUTPUT`    | `OUTPUT a, b, …`                                  | Return variables and end execution (must be last, exactly once)   |
-
-### Expressions
-
-`CALCULATE` and `ASSERT` use [mathjs](https://mathjs.org) for evaluation.
-
-**Operators:** `+` `-` `*` `/` `^` `( )`
-
-**Functions:** `sqrt` · `abs` · `round(x, n)` · `floor` · `ceil` · `log` · `log10` · `log2` · `exp` · `pow` · `min` · `max` · `mod` · `sign`
-
-**Constants:** `pi` · `e`
-
 ### API
 
 ```
