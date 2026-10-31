@@ -1,6 +1,6 @@
 # Gate Scale (FinQL)
 
-A full-stack API gateway for running financial queries, managing API keys, and tracking usage. Admins also get platform-wide metrics.
+A full-stack application for running financial queries, managing API keys, and tracking usage. Admins also get platform-wide metrics.
 
 Live app: [https://gatescale.onrender.com/](https://gatescale.onrender.com/)
 
@@ -12,15 +12,9 @@ Live app: [https://gatescale.onrender.com/](https://gatescale.onrender.com/)
 
 ## Deployment
 
-**Self-hosted production-style** deployment with Nginx, multiple backend replicas, Redis, and full infra control
+Self-hosted deployment with Nginx, multiple backend replicas, Redis, and full infra control
 
-The public app at [https://gatescale.onrender.com/](https://gatescale.onrender.com/) is deployed differently:
-
-- **Frontend + backend**: Render
-- **Redis**: Upstack
-- **PostgreSQL**: Supabase
-
-### Self-Hosted Production Infra
+### Flowchart
 
 ```mermaid
 flowchart LR
@@ -47,9 +41,9 @@ flowchart LR
 
 ---
 
-## FinQL
+## DSL
 
-FinQL is a lightweight, line-based DSL for financial computation. Scripts run sequentially and are stateless per request.
+FinQL is a lightweight, line-based DSL for mathematical computation. Scripts run sequentially and are stateless per request.
 
 ### Quick Example
 
@@ -128,23 +122,6 @@ Content-Type: application/json
 
 ## Getting Started
 
-You can run Gate Scale either in hot-reload development mode or in a production-style local stack.
-
-### Development
-
-Start all services with hot reload:
-
-```bash
-docker compose -f docker-compose.dev.yml up --build
-```
-
-| Service    | URL                                            |
-| ---------- | ---------------------------------------------- |
-| API        | [http://localhost:9000](http://localhost:9000) |
-| Frontend   | [http://localhost:5173](http://localhost:5173) |
-| PostgreSQL | localhost:6000                                 |
-| Redis      | localhost:6379                                 |
-
 ### Testing
 
 Run backend tests
@@ -154,18 +131,11 @@ cd backend
 npm run test
 ```
 
-### Production-Style Local Stack
+### Running the application
 
 ```bash
 docker compose up --build -d --scale api=2
 ```
-
-This mode mirrors a more production-like setup:
-
-- Nginx serves the built frontend and proxies `/api/*` requests to the backend upstream
-- Two backend containers run behind Nginx upstreams
-- PostgreSQL and Redis are self-hosted inside the Compose stack
-- You keep full control over the infrastructure and networking
 
 | Service       | URL / Access                                   |
 | ------------- | ---------------------------------------------- |
@@ -184,34 +154,9 @@ docker compose -f docker-compose.dev.yml down
 docker compose down
 ```
 
----
-
-## Database
-
-### Run Migrations
-
-```bash
-# Inside the running api container
-docker compose -f docker-compose.dev.yml exec api npm run db:migrate
-
-# Or locally
-cd backend && npm run db:migrate
-```
-
-### Generate Migrations
-
-After modifying schema files in `backend/src/db/schemas/`:
-
-```bash
-docker compose -f docker-compose.dev.yml exec api npm run db:generate
-
-# Or locally
-cd backend && npm run db:generate
-```
-
 ### Seed Default Admin User
 
-The seed runs automatically on container startup. It is idempotent, so existing admin users are left unchanged.
+The seed runs automatically on container startup. It is idempotent.
 
 To run it manually:
 
@@ -230,40 +175,6 @@ Default credentials:
 | `ADMIN_EMAIL`    | `admin@finql.dev` |
 | `ADMIN_PASSWORD` | `Admin@123!`      |
 | `ADMIN_NAME`     | `Admin`           |
-
-> **Change the default password** before deploying to any shared environment.
-
----
-
-## Environment Variables
-
-All environment variables are defined in the root `.env` file.
-
-```bash
-cp .env.example .env
-```
-
-> **Never commit `.env` to version control.**
-
-### Root `.env` (shared by both compose files)
-
-| Variable              | Description                        | Example                                                |
-| --------------------- | ---------------------------------- | ------------------------------------------------------ |
-| `NODE_ENV`            | Runtime environment                | `production`                                           |
-| `DATABASE_URL`        | PostgreSQL connection string       | `postgres://postgres:password@postgres:5432/gatescale` |
-| `REDIS_URL`           | Redis connection string            | `redis://redis:6379`                                   |
-| `JWT_SECRET`          | Secret for signing JWTs            | `supersecret`                                          |
-| `API_KEY_HMAC_SECRET` | HMAC secret for API key hashing    | `change-me-in-production`                              |
-| `CLIENT_URL`          | Allowed CORS origin in development | `http://localhost:5173`                                |
-| `POSTGRES_USER`       | PostgreSQL username                | `postgres`                                             |
-| `POSTGRES_PASSWORD`   | PostgreSQL password                | `password`                                             |
-| `POSTGRES_DB`         | PostgreSQL database name           | `gatescale`                                            |
-| `VITE_API_URL`        | Frontend API base URL              | `http://localhost:9000`                                |
-| `ADMIN_EMAIL`         | Seed: admin user email             | `admin@finql.dev`                                      |
-| `ADMIN_PASSWORD`      | Seed: admin user password          | `Admin@123!`                                           |
-| `ADMIN_NAME`          | Seed: admin user display name      | `Admin`                                                |
-
----
 
 ## User Roles
 
